@@ -1,0 +1,27 @@
+.navbar-light .navbar-nav .nav-link{
+    color: white;
+    font-size: 22px;
+}
+.navbar-light .navbar-brand
+{
+    color: white;
+    font-size: 30px;
+}
+.hr
+{
+    padding-left: 150px;
+    padding-top: 150px;
+    font-style: italic;
+    font-weight: bold;
+}
+
+nav {
+  transition: 0.3s ease;
+}
+
+.opaque {
+  background-color: #175721; /* Set your desired opaque background color */
+  /* Add any other styles for the opaque navbar */
+  color: black;
+}
+

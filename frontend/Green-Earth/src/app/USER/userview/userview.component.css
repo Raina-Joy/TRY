@@ -1,0 +1,9 @@
+header
+{
+    height: 60vh;
+    min-height: 100px;
+    background-size: auto;
+    color: #fff;
+    padding-top: 100px;
+    background-image: linear-gradient(rgba(0,0,0,.6), rgba(0,0,0,.6)),url("../../../assets/pexels-anna-shvets-5029810.jpg");
+}

@@ -1,0 +1,126 @@
+header
+{
+    height: 60vh;
+    min-height: 100px;
+    background-size: auto;
+    color: #fff;
+    padding-top: 100px;
+    background-image: linear-gradient(rgba(0,0,0,.6), rgba(0,0,0,.6)),url("../../assets/headerbg.jpg");
+}
+.rowdies-bold {
+    font-family: "Rowdies", sans-serif;
+    font-weight: 700;
+    font-size: 100px;
+    font-style: normal;
+  }
+  .card {
+  
+    position:relative;
+    overflow:hidden;
+    width:300px;
+    height: 250px;
+    margin:0 auto;
+    background:#ffffff;
+    padding:20px;
+    box-sizing:border-box;
+    text-align:center;
+    box-shadow:0 10px 40px rgba(0,0,0,.5)
+    
+  }
+ .card .layer {
+    z-index:1;
+    position:absolute;
+    top:calc(100% - 2px);
+    height:100%;
+    width:100%;
+    left:0;
+    background:linear-gradient(to left , rgb(32, 246, 125), rgb(6, 93, 16));
+    transition:0.5s;
+    
+  }
+  
+  .card .content {
+    z-index:2; 
+    position:relative;
+  }
+  
+.card:hover  .layer{
+    top:0;
+  }
+  
+.card .content p {
+    font-size:14px;
+    line-height:24px;
+    color:#fff;
+    
+  }
+  .card .content .image {
+    width:100px; height:100px;
+    margin:0 auto;
+    border-radius:50%;
+    overflow:hidden;
+    border: 4px solid white;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    
+  }
+  
+   .card .content .details h2 {
+  font-size:24px;
+  color:white;
+  }
+  .card .content .details h2 {
+  font-size:24px;
+  color:#0E3500;
+    transition:0.5s;
+  }
+  .card:hover .content .details h2{
+    color:white;
+    position:relative
+  }
+
+
+  /* video background */
+  .sec-container {
+    width: 100%;
+    height: 400px;
+    display: flex;
+    position: relative;
+    overflow: hidden;
+    align-content: flex-end;
+    justify-content: center;
+  }
+  
+  .sec-video {
+    position: relative;
+    object-fit:cover;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+  
+  }
+  
+  .sec-content {
+    position: absolute;
+    color: #fff;
+    /* margin: 10rem 25rem; */
+    padding: 4rem;
+    background-color: #17181779;
+    border-radius: 2rem; /*This is only working on one corner*/
+    align-self: center;
+    text-align: center;
+    font-size: 4rem;
+    font-weight: bolder;
+    width: 60%;   
+     
+   
+  }
+
+
+@media (max-width: 750px) {
+    #background-video { display: none; }
+    body {
+      background: url("../../assets/video1.mp4") no-repeat;
+      background-size: cover;
+    }
+}
+  

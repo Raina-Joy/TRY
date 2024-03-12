@@ -1,0 +1,136 @@
+header
+{
+    height: 100vh;
+    min-height: 400px;
+    background-size: cover;
+    color: #fff;
+    padding-top: 100px;
+    background-image: linear-gradient(rgba(0,0,0,.2), rgba(0,0,0,.2)),url("../../assets/geh.jpg");
+}
+
+
+
+.home-contact-form {
+    background-color: rgba(65, 131, 41, 0.8);
+    padding: 50px;
+   
+    
+    margin-top: 25px;
+    /* Chrome, Safari, Edge, Opera */
+    /* Firefox */
+    
+  }
+  contact-form row {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: calc(-1* var(--bs-gutter-y));
+    margin-right: calc(-.5* var(--bs-gutter-x));
+    margin-left: calc(-.5* var(--bs-gutter-x));
+}
+
+.rowg {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 4px;
+    
+  }
+  
+  /* Create four equal columns that sits next to each other */
+  .column {
+    flex: 25%;
+    max-width: 25%;
+    padding: 0 4px;
+  }
+  
+  .column img {
+    margin-top: 8px;
+    vertical-align: top;
+    width: 100%;
+  }
+  
+  /* Responsive layout - makes a two column-layout instead of four columns */
+  @media screen and (max-width: 800px) {
+    .column {
+      flex: 50%;
+      max-width: 50%;
+    }
+  }
+  
+  /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
+  @media screen and (max-width: 600px) {
+    .column {
+      flex: 100%;
+      max-width: 100%;
+    }
+  }
+  .card
+{
+  background-color: white;
+  color: #0E3500;
+  border: 8px solid white;
+  transition: background-color 1s ease; 
+}
+.card:hover
+{
+  background:linear-gradient(to left , rgb(32, 246, 125), rgb(6, 93, 16));
+  transition: 1.5s;
+  color: white; 
+  border: 8px solid white;   
+}
+.animate-charcter
+{
+  background-image: linear-gradient(
+    -225deg,
+    #f573a7 0%,
+    #a6f39c 29%,
+    #fffcfd 67%,
+    #fff800 100%
+  );
+  background-size: auto auto;
+  background-clip: border-box;
+  background-size: 200% auto;
+  color: #fff;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textclip 2s linear infinite;
+  display: inline-block;
+      font-size: 40px;
+}
+
+@keyframes textclip {
+  to {
+    background-position: 200% center;
+  }
+}
+
+
+
+.counter-delivered {
+  font-size: 2em;
+  color: #333;
+  font-variant-numeric: lining-nums proportional-nums;
+}
+.divc
+{
+  background-color: white;
+  color: #0E3500;
+  transition: background-color 1s ease; 
+  border:4px solid white;
+}
+.divc:hover
+{
+  background-color: #0E3500;
+  color: white;
+  border:4px solid white;
+
+}
+
+
+
+  
+
+  
