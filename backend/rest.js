@@ -9,6 +9,9 @@ const bcrypt = require('bcrypt');
 const app = express();
 const jwt = require('jsonwebtoken');
 const adminmodel = require('./adminmodel');
+const pickupModel = require('./pickup-model');
+const emprouteModel = require('./route-model');
+const emppickupModel = require("./epickupmodel")
 mongoose.connect('mongodb://localhost:27017/gedb').then(()=>{console.log('Connected to DB')}).catch(()=>{console.log('Error connecting to DB')})
 
 app.use(bodyParser.json());
@@ -83,7 +86,9 @@ app.post('/login',(req,res)=>{
         return res.status(200).json({
             token:token,
             expiresIn: 3600,
-            status:200
+            status:200,
+            currentuser:userFound.name,
+            currentuserid:userFound._id
             
         })
         
@@ -100,8 +105,7 @@ app.post('/login',(req,res)=>{
 ////Employee data
 app.get('/allemp',async(req,res)=>{
     const allemp = await signupempModel.find();
-    console.log(allemp);
-    res.send(allemp);
+    res.send(allemp)
 })
 
 app.post('/signupemp', (req,res)=>{
@@ -110,6 +114,10 @@ app.post('/signupemp', (req,res)=>{
         const signupemp = new signupempModel(
             {
                 name: req.body.name,
+                address:req.body.address,
+                pincode:req.body.pincode,
+                phno:req.body.phno,
+                email:req.body.email,
                 password: hash
             })
   
@@ -133,44 +141,43 @@ app.post('/signupemp', (req,res)=>{
 
 
 
-app.post('/loginemp',(req,res)=>{
-    let userFound;
-
-    signupempModel.findOne({name:req.body.name})
-    .then(user=>{
-        if(!user)
-            {
-                return res.status(401).json({
-                    'message':'User not found'
+        app.post('/loginemp', (req, res) => {
+            let userFound;
+        
+            signupempModel.findOne({ name: req.body.name })
+                .then(user => {
+                    if (!user) {
+                        return res.status(401).json({
+                            'message': 'User not found'
+                        });
+                    }
+                    userFound = user;
+                    
+                    return bcrypt.compare(req.body.password, user.password);
                 })
-                
-              
-            }
-            userFound = user;
-            return bcrypt.compare(req.body.password, user.password)
-    }).then(result=>{
-        if(!result)
-        {
-            return res.status(401).json({
-                message:'Password is incorrect'
-            })
-            
-        }
-
-        const token = jwt.sign({name:userFound.name, userId:userFound._id},"secret_string",{expiresIn:"1h"})
-        return res.status(200).json({
-            token:token,
-            expiresIn: 3600
-        })
+                .then(result => {
+                    if (!result) {
+                        return res.status(401).json({
+                            message: 'Password is incorrect'
+                        });
+                    }
         
-    })
-    .catch(err=>{
-        return res.status(401).json({
-            message:'Error with authentification'
-        })
+                    const token = jwt.sign({ name: userFound.name, userId: userFound._id }, "secret_string", { expiresIn: "1h" });
+                    return res.status(200).json({
+                        token: token,
+                        expiresIn: 3600,
+                        currentuser:userFound.name,
+                        currentuserid:userFound._id
+                    });
+                })
+                .catch(err => {
+                    return res.status(401).json({
+                        message: 'Error with authentication'
+                    });
+                });
+        });
         
-    })
-})
+        
 
 
 //admin
@@ -238,6 +245,154 @@ app.post('/loginadmin',(req,res)=>{
         
     })
 })
+
+
+//Data section
+
+app.post('/addpickup',(req,res)=>{
+    const pickup = new pickupModel(
+        {
+            userid:req.body.userid,
+            name: req.body.name,
+            address:req.body.address,
+            phno:req.body.phno,
+            pincode:req.body.pincode,
+            email:req.body.email,
+            date:req.body.date,
+            time:req.body.time,
+            rwcat:req.body.rwcat
+        })
+        pickup.save().then(result=>{
+            return res.status(201).json({
+                message:'Data entered',
+                status: 201
+            })
+        })
+        .catch(err=>{
+            
+                return res.status(401).json({
+                    message:'Data add failed',
+                    status:401
+            
+        })
+        
+})
+})
+app.get('/allpickupreq',async(req,res)=>{
+    const allpickupreq = await pickupModel.find();
+    res.send(allpickupreq)
+})
+app.post('/addroute',(req,res)=>{
+    const emproutemodel = new emprouteModel({
+        empid:req.body.empid,
+        empname:req.body.empname,
+        emppin:req.body.emppin,
+        collectionpins:{
+            pin1: req.body.collectionpins.pin1,
+            pin2:req.body.collectionpins.pin2,
+            pin3:req.body.collectionpins.pin3
+        }   
+    })
+    emproutemodel.save().then(result=>{
+        return res.status(201).json({
+            message:'Data entered',
+            status: 201
+        })
+    })
+    .catch(err=>{
+        
+            return res.status(401).json({
+                message:'Data add failed',
+                status:401
+        
+    })
+    
+})
+    
+})
+
+app.get('/allroute',async(req,res)=>{
+    const allroute = await emprouteModel.find();
+    res.send(allroute)
+})
+
+app.get('/match',(req,res)=>{
+
+    const targetPin = parseInt(req.query.data); // The pin code you want to match
+
+// Your MongoDB query
+emprouteModel.aggregate([
+    {
+      $match: {
+        $or: [
+          { "collectionpins.pin1": targetPin },
+          { "collectionpins.pin2": targetPin },
+          { "collectionpins.pin3": targetPin }
+        ]
+      }
+    },
+    {
+      $project: {
+        collectionpins: 1,
+        empid: 1,
+        empname: 1,
+        emppin: 1
+      }
+    }
+  ])
+  .exec() // No callback function
+  .then(results => {
+    // Now you can process the results
+    results.forEach(result => {
+
+      // Access the collectionpins and other properties of each document
+      return res.send(result)
+        
+    });
+  })
+  .catch(err => {
+    console.error(err); // Handle error
+  });
+})
+
+app.post('/emppudata',(req,res)=>{
+    const emppickupdata = new emppickupModel(
+        {
+            empId:req.body.empId,
+            empName: req.body.empName,
+            pickupData:req.body.pickupData,
+            
+        })
+        emppickupdata.save().then(result=>{
+            return res.status(201).json({
+                message:'Data entered',
+                status: 201
+            })
+        })
+        .catch(err=>{
+            
+                return res.status(401).json({
+                    message:'Data add failed',
+                    status:401
+            
+        })
+        
+})
+})
+
+app.get('/emppureq', async(req,res)=>{
+    const data = req.query.data;
+    console.log(data);
+
+    
+    const resdata = await emppickupModel.find({empId:data});
+    console.log(resdata);
+    
+    return res.send(resdata)
+})
+
+
+
 
 
         module.exports = app;

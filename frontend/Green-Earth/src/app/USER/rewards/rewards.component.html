@@ -1,0 +1,11 @@
+<div class="container mt-lg-5 ">
+  <div class="row">
+    <div class="col-lg-4">
+      <button class="btn btn-success " (click)="toggleDiv()">Click to get the reward</button>
+
+<div *ngIf="showDiv" [@fadeInOut] class="animated-div">
+  This div will be animated
+</div>
+    </div>
+  </div>
+</div>

@@ -20,6 +20,16 @@ import { AdminviewComponent } from './admin/adminview/adminview.component';
 import { LoginadminComponent } from './admin/loginadmin/loginadmin.component';
 import { AboutusComponent } from './aboutus/aboutus.component';
 import { ContactusComponent } from './contactus/contactus.component';
+import { SbNavComponent } from './sb-nav/sb-nav.component';
+import { DashboardComponent } from './admin/dashboard/dashboard.component';
+import { EmployeesComponent } from './admin/employees/employees.component';
+import { UsersComponent } from './admin/users/users.component';
+import { CouponsComponent } from './admin/coupons/coupons.component';
+import { RaisepickupComponent } from './USER/raisepickup/raisepickup.component';
+import { PuhistoryComponent } from './USER/puhistory/puhistory.component';
+import { RewardsComponent } from './USER/rewards/rewards.component';
+import { PickupreqComponent } from './admin/pickupreq/pickupreq.component';
+import { PunotificationComponent } from './EMP/punotification/punotification.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +46,16 @@ import { ContactusComponent } from './contactus/contactus.component';
     LoginadminComponent,
     AboutusComponent,
     ContactusComponent,
+    SbNavComponent,
+    DashboardComponent,
+    EmployeesComponent,
+    UsersComponent,
+    CouponsComponent,
+    RaisepickupComponent,
+    PuhistoryComponent,
+    RewardsComponent,
+    PickupreqComponent,
+    PunotificationComponent,
    
     
   ],

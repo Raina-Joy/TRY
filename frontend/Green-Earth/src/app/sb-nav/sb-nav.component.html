@@ -1,0 +1,60 @@
+<nav>
+    <ul>
+        <li>
+            <div class="user-profile-image">
+                <img src="../../../assets/tav.png" alt="user-profile-icon">
+            </div>
+        </li>
+        <li>
+            <a [routerLink]="['dashboard']">
+                <div class="icon">
+                    <i class="bi bi-grid-fill"></i>
+                </div>
+                Dashboard
+            </a>
+        </li>
+        <li>
+            <a [routerLink]="['ppreq']">
+                <div class="icon">
+                    <i class="bi bi-truck"></i>
+                    
+                </div>
+                Pickup Requests
+            </a>
+        </li>
+        <li>
+            <a [routerLink]="['employees']">
+                <div class="icon">
+                    <i class="bi bi-person-fill"></i>
+
+                </div>
+                Employee
+            </a>
+        </li>
+        <li>
+            <a [routerLink]="['users']">
+                <div class="icon">
+                    <i class="bi bi-people-fill"></i>
+
+                </div>
+                Users
+            </a>
+        </li>
+        <li>
+            <a [routerLink]="['coupons']">
+                <div class="icon">
+                    <i class="bi bi-cash"></i>
+                </div>
+                Coupons
+            </a>
+        </li>
+        <li>
+            <a data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <div class="icon">
+                    <i class="bi bi-power"></i>
+                </div>
+                Logout
+            </a>
+        </li>
+    </ul>
+</nav>

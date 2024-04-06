@@ -12,6 +12,8 @@ import { data, error } from "jquery";
 export class AuthService
 {
     private token: string;
+    private curuser:string;
+    private curuser_id:string;
     private status: number;
     private msg: string;
     private authenticatedSub = new Subject<boolean>();
@@ -27,6 +29,14 @@ export class AuthService
     getToken(){
         return this.token;
     }
+    getUser()
+    {
+        return this.curuser;
+    }
+    getUserId()
+    {
+        return this.curuser_id;
+    }
     constructor(private http:HttpClient, private router:Router ){}
     signupUser(name:string,password:string)
     {
@@ -40,9 +50,10 @@ export class AuthService
     loginUser(username: string, password: string){
         const authData: AuthModel = {name: username, password: password};
 
-        this.http.post<{token:string, expiresIn:number, message:string, status:number}>('http://localhost:3000/login/', authData)
+        this.http.post<{token:string, expiresIn:number, status:number, currentuser:string, currentuserid:string}>('http://localhost:3000/login/', authData)
             .subscribe((res)=> { 
-
+                this.curuser_id = res.currentuserid;
+                this.curuser = res.currentuser;
                 this.token = res.token;
                 
                 if(this.token)
@@ -57,7 +68,7 @@ export class AuthService
                     }, res.expiresIn * 1000);
                     const now = new Date();
                     const expiresDate = new Date(now.getTime()+(res.expiresIn*1000));
-                    this.storeLoginDetails(this.token, expiresDate);
+                    this.storeLoginDetails(this.token, expiresDate, this.curuser, this.curuser_id);
                 }
    
             }, (error) => {
@@ -84,24 +95,6 @@ export class AuthService
           }
     }
 
-    // loginUser(name:string,password:string)
-    // {
-
-    //     const authData: AuthModel = {name:name,password:password};
-    //     this.http.post<{token:string,expiresIn:number}>('http://localhost:3000/login/',authData).subscribe(res=>{
-    //         this.token=res.token;
-    //         if(this.token)
-    //         {
-    //             this.authenticatedSub.next(true);
-    //             this.isAuthenticated=true;
-    //             this.router.navigate(['/']);
-    //             this.logoutTimer = setTimeout(()=> {this.logout()}, res.expiresIn * 1000);
-    //             const now = new Date();
-    //             const expiresDate = new Date(now.getTime()+ (res.expiresIn * 1000));
-    //             this.storeLoginDetails(this.token,expiresDate);
-    //         }
-    //     })
-    // }
     logout()
     {
         this.token = '';
@@ -113,19 +106,26 @@ export class AuthService
     
     }
 
-    storeLoginDetails(token:string, expirationDate:Date)
+    storeLoginDetails(token:string, expirationDate:Date, currentuser:string, currentuserid:string)
     {
+        localStorage.setItem('usercur',currentuser);
+        localStorage.setItem('usercurid',currentuserid);
         localStorage.setItem('token',token);
         localStorage.setItem('expiresIn',expirationDate.toISOString());
 
     }
     clearLoginDetails()
     {
+        
+        localStorage.removeItem('usercur');
+        localStorage.removeItem('usercurid');
         localStorage.removeItem('token');
         localStorage.removeItem('expiresIn');
     }
     getLocalStorageData()
     {
+        const username = localStorage.getItem('usercur')
+        const userid = localStorage.getItem('usercurid')
         const token = localStorage.getItem('token');
         const expiresIn = localStorage.getItem('expiresIn');
         if(!token || !expiresIn)
@@ -134,7 +134,9 @@ export class AuthService
         }
         return{
             'token':token,
-            'expiresIn': new Date(expiresIn)
+            'expiresIn': new Date(expiresIn),
+            'user':username,
+            'user_id':userid
         }
     }
     
@@ -145,6 +147,9 @@ export class AuthService
             const expiresIn = localStorageData.expiresIn.getTime() - now.getTime();
 
             if(expiresIn > 0){
+         this.curuser_id =  JSON.stringify(localStorageData.user_id);
+
+           this.curuser =  JSON.stringify(localStorageData.user);
                 this.token = localStorageData.token;
                 this.isAuthenticated = true;
                 this.authenticatedSub.next(true);
@@ -155,10 +160,10 @@ export class AuthService
     
 //employee details
 
-signupEmp(name:string, password:string)
+signupEmp(name:string, address:string, pincode:number, phno:number, email:string, password:string)
     {
         
-        const authDataEmp: AuthModelEmp = {name:name, password:password};
+        const authDataEmp: AuthModelEmp = {name:name, address:address,pincode:pincode,phno:phno,email:email, password:password};
         this.http.post('http://localhost:3000/signupemp',authDataEmp).subscribe(res=>
         {
             
@@ -180,10 +185,19 @@ signupEmp(name:string, password:string)
     }
       // Employee login
     loginEmp(username: string, password: string){
-        const authEmpData: AuthModelEmp = {name: username, password: password};
+        const authEmpData: AuthModelEmp = {
+            name: username, password: password,
+            address: "",
+            pincode: 0,
+            phno: 0,
+            email: ""
+        };
 
-        this.http.post<{token:string, expiresIn:number}>('http://localhost:3000/loginemp/', authEmpData)
+
+        this.http.post<{token:string, expiresIn:number, status:number, currentuser:string, currentuserid:string}>('http://localhost:3000/loginemp/', authEmpData)
             .subscribe(res => {
+                this.curuser_id = res.currentuserid;
+                this.curuser = res.currentuser;
                 this.token = res.token;
                 if(this.token)
                 {
@@ -196,29 +210,11 @@ signupEmp(name:string, password:string)
                     }, res.expiresIn * 1000);
                     const now = new Date();
                     const expiresDate = new Date(now.getTime()+(res.expiresIn*1000));
-                    this.storeLoginDetails(this.token, expiresDate);
+                    this.storeEmpLoginDetails(this.token, expiresDate, this.curuser, this.curuser_id);
                 }
             })
     }
-
-    // loginUser(name:string,password:string)
-    // {
-
-    //     const authData: AuthModel = {name:name,password:password};
-    //     this.http.post<{token:string,expiresIn:number}>('http://localhost:3000/login/',authData).subscribe(res=>{
-    //         this.token=res.token;
-    //         if(this.token)
-    //         {
-    //             this.authenticatedSub.next(true);
-    //             this.isAuthenticated=true;
-    //             this.router.navigate(['/']);
-    //             this.logoutTimer = setTimeout(()=> {this.logout()}, res.expiresIn * 1000);
-    //             const now = new Date();
-    //             const expiresDate = new Date(now.getTime()+ (res.expiresIn * 1000));
-    //             this.storeLoginDetails(this.token,expiresDate);
-    //         }
-    //     })
-    // }
+    
     logoutEmp()
     {
         this.token = '';
@@ -230,19 +226,26 @@ signupEmp(name:string, password:string)
     
     }
 
-    storeEmpLoginDetails(token:string, expirationDate:Date)
+    storeEmpLoginDetails(token:string, expirationDate:Date, currentuser:string, currentuserid:string)
     {
+        
+        localStorage.setItem('usercur',currentuser)
+        localStorage.setItem('usercurid',currentuserid);
         localStorage.setItem('token',token);
         localStorage.setItem('expiresIn',expirationDate.toISOString());
 
     }
     clearEmpLoginDetails()
     {
+        localStorage.removeItem('usercur');
+        localStorage.removeItem('usercurid');
         localStorage.removeItem('token');
         localStorage.removeItem('expiresIn');
     }
     getEmpLocalStorageData()
     {
+        const username = localStorage.getItem('usercur')
+        const userid = localStorage.getItem('usercurid')
         const token = localStorage.getItem('token');
         const expiresIn = localStorage.getItem('expiresIn');
         if(!token || !expiresIn)
@@ -251,17 +254,22 @@ signupEmp(name:string, password:string)
         }
         return{
             'token':token,
-            'expiresIn': new Date(expiresIn)
+            'expiresIn': new Date(expiresIn),
+            'user':username,
+            'user_id':userid
         }
     }
     
     authenticateEmpFromLocalStorage(){
-        const localStorageData = this.getLocalStorageData();
+        const localStorageData = this.getEmpLocalStorageData();
         if(localStorageData){
             const now = new Date();
             const expiresIn = localStorageData.expiresIn.getTime() - now.getTime();
 
             if(expiresIn > 0){
+         this.curuser_id =  JSON.stringify(localStorageData.user_id);
+
+           this.curuser =  JSON.stringify(localStorageData.user);
                 this.token = localStorageData.token;
                 this.isAuthenticated = true;
                 this.authenticatedSub.next(true);
@@ -292,7 +300,7 @@ loginAdmin(username: string, password: string){
                 }, res.expiresIn * 1000);
                 const now = new Date();
                 const expiresDate = new Date(now.getTime()+(res.expiresIn*1000));
-                this.storeLoginDetails(this.token, expiresDate);
+                this.storeLoginDetails(this.token, expiresDate, this.curuser, this.curuser_id);
             }
         })
 }
@@ -309,19 +317,25 @@ logoutAdmin()
 
 }
 
-storeAdminLoginDetails(token:string, expirationDate:Date)
+storeAdminLoginDetails(token:string, expirationDate:Date, currentuser:string, currentuserid:string)
 {
+    localStorage.setItem('usercurid',currentuserid)
+    localStorage.setItem('usercur',currentuser)
     localStorage.setItem('token',token);
     localStorage.setItem('expiresIn',expirationDate.toISOString());
 
 }
 clearAdminLoginDetails()
 {
+    localStorage.removeItem('usercur');
+    localStorage.removeItem('usercurid');
     localStorage.removeItem('token');
     localStorage.removeItem('expiresIn');
 }
 getAdminLocalStorageData()
 {
+    const username = localStorage.getItem('usercur')
+    const userid = localStorage.getItem('usercurid')
     const token = localStorage.getItem('token');
     const expiresIn = localStorage.getItem('expiresIn');
     if(!token || !expiresIn)
@@ -330,33 +344,28 @@ getAdminLocalStorageData()
     }
     return{
         'token':token,
-        'expiresIn': new Date(expiresIn)
+        'expiresIn': new Date(expiresIn),
+        'user':username,
+        'user_id':userid
     }
 }
 
 authenticateAdminFromLocalStorage(){
-    const localStorageData = this.getLocalStorageData();
+    const localStorageData = this.getAdminLocalStorageData();
     if(localStorageData){
         const now = new Date();
         const expiresIn = localStorageData.expiresIn.getTime() - now.getTime();
 
         if(expiresIn > 0){
+     this.curuser_id =  JSON.stringify(localStorageData.user_id);
+
+       this.curuser =  JSON.stringify(localStorageData.user);
             this.token = localStorageData.token;
             this.isAuthenticated = true;
             this.authenticatedSub.next(true);
             this.logoutTimer.setTimeout(expiresIn / 1000);
         }
     }
-}
 
 }
-
-
-
-
-
-
-
-
-
-
+}

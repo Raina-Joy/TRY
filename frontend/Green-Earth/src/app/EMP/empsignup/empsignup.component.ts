@@ -14,15 +14,16 @@ export class EmpsignupComponent implements OnInit {
   ngOnInit(): void {
     this.signupempForm = new FormGroup({
       'name':new FormControl(''),
-      // 'address':new FormControl(''),
-      // 'phno':new FormControl(''),
-      // 'email':new FormControl(''),
+      'address':new FormControl(''),
+      'pincode':new FormControl(''),
+      'phno':new FormControl(''),
+      'email':new FormControl(''),
       'password': new FormControl('')
     })
 }
 onSubmit()
 {
-  this.authservice.signupEmp(this.signupempForm.value.name,this.signupempForm.value.password)
+  this.authservice.signupEmp(this.signupempForm.value.name,this.signupempForm.value.address,this.signupempForm.value.pincode,this.signupempForm.value.phno,this.signupempForm.value.email,this.signupempForm.value.password)
   
 }
 }

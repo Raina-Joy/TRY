@@ -1,5 +1,9 @@
 export interface AuthModelEmp
 {
     name:string,
-    password:string
+    address:string,
+    pincode:number,
+    phno:number,
+    email:string,
+    password:string,
 }

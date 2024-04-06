@@ -1,16 +1,167 @@
-<header>
-	<div class="hr text-center">
+<div class="header">
+    <span><i class="bi bi-person-circle"></i></span>
+    <span><i class="bi bi-bell-fill"></i></span>
+    <span><i class="bi bi-envelope-fill"></i></span>
+</div>
+<div class="container-fluid">
+    <!-- Section side bar -->
+    <div class="container sidebar">
+        <!-- Navigation space -->
+        <nav>
+			<ul>
+				<li>
+					<div class="user-profile-image">
+						<img src="../../../assets/user.jpg" alt="user-profile-icon">
+					</div>
+					<div>
+					<p class="mx-auto">Hai {{current_user}}</p>
+					
 
-		<p style="font-size: 35px;font-family:'Shadows Into Light';float: left;">Name</p>
+					</div>
+
+				</li>
+				
+				<li>
+					<a [routerLink]="['pickup']">
+						<div class="icon">
+							<i class="bi bi-truck"></i>
+		
+						</div>
+						Raise Pickup
+					</a>
+				</li>
+				<li>
+					<a [routerLink]="['puhistory']">
+						<div class="icon">
+							<i class="bi bi-clock-history"></i>
+		
+						</div>
+						Pick up History
+					</a>
+				</li>
+				<li>
+					<a [routerLink]="['rewards']">
+						<div class="icon">
+							<i class="bi bi-star-half"></i>
+						</div>
+						Rewards
+					</a>
+				</li>
+				<li>
+					<a data-bs-toggle="modal" data-bs-target="#exampleModal">
+						<div class="icon">
+							<i class="bi bi-power"></i>
+						</div>
+						Logout
+					</a>
+				</li>
+			</ul>
+		</nav>
+        
+    </div>
+
+    <!-- Section routeroutlet -->
+    <div class="container main">
+        <router-outlet></router-outlet>
+    </div>
+
+    
+    
+</div>
+<!-- Modal section -->
+<!-- Button trigger modal -->
+
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered ">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="bi bi-power"></i>Logout</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+         <p class="text-danger ">Confirm to logout</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-danger" (click)="logout()">Logout</button>
+        </div>
+      </div>
+    </div>
   </div>
 
-</header>
-<div style="height: 700px;" class="container">
-<h1>Welcome to Green Earth</h1>
-<button type="submit" class="bg-success mb-3">Request Pickup</button><br>
-<button type="submit" class="bg-success mb-3">Pickup History</button><br>
-<button type="submit" class="bg-success mb-3">Coupen store</button><br>
-<button type="submit" class="bg-success mb-3">Request Pickup</button>    
-</div>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

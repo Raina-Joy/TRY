@@ -9,6 +9,8 @@ import { AuthService } from '../../shared/auth-service';
 export class EmpviewComponent implements OnInit, OnDestroy {
   private authentificationSub:Subscription;
   userAuthenticated = false;
+  public current_user:string;
+  public current_userId:string;
   constructor(private authservice:AuthService){}
 
 
@@ -16,7 +18,8 @@ export class EmpviewComponent implements OnInit, OnDestroy {
     this.authentificationSub.unsubscribe();
   }
   ngOnInit(): void {
-    
+    this.current_user = this.authservice.getUser();
+    this.current_userId=this.authservice.getUserId();
     this.userAuthenticated = this.authservice.getIsAuthenticated();
     this.authentificationSub = this.authservice.getAuthenticatedSub().subscribe(status => {
       this.userAuthenticated = status;
