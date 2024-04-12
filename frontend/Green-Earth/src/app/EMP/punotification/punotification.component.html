@@ -24,7 +24,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let row of responseData">
+        <tr *ngFor="let row of responseData" (click)="onRowClick(row)">
           <td>{{ row.pickupData._id }}</td>
           <td>{{ row.pickupData.userid }}</td>
           <td>{{ row.pickupData.name }}</td>
@@ -34,7 +34,7 @@
           <td>{{ row.pickupData.email }}</td>
           <td>{{ row.pickupData.date }}</td>
           <td>{{ row.pickupData.time }}</td>
-          <td class="text-danger ">Status text</td>
+          <td class="text-danger "><button class="btn btn-info">Confirm</button> <br> <button class="btn btn-warning " (click)="sendReward()">Finish</button></td>
         </tr>
 
 

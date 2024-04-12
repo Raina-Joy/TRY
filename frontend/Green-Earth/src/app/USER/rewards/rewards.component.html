@@ -1,11 +1,72 @@
-<div class="container mt-lg-5 ">
-  <div class="row">
-    <div class="col-lg-4">
-      <button class="btn btn-success " (click)="toggleDiv()">Click to get the reward</button>
+<!-- <p>{{current_userId}}</p>-->
+<!-- <button class="btn btn-success" (click)="showRewards()">Click to get rewards</button>
+<div class="card-container">
+  <ng-container *ngFor="let row of resdata; let rowIndex = index">
+    <ng-container *ngFor="let coupon of row.receivedCoupon; let couponIndex = index">
+      <div class="card bg-success bg-gradient text-white" *ngIf="couponVisibility[rowIndex * row.receivedCoupon.length + couponIndex]">
+        <div class="card-body text-center">
+          <h2 class="card-text">{{ coupon.brandname }}</h2>
+          <p class="card-text">{{ coupon.title }}</p>
+          <p class="card-text">{{ coupon.desc }}</p>
+          <div *ngIf="showCouponCode" class="card-text">
+          <p class="card-text bg-white text-dark border-4">Coupon Code: {{ coupon.code }}</p>
+          <p class="card-text">Start Date: {{ coupon.doc | date:'shortDate' }}</p>
+          <p class="card-text">End Date: {{ coupon.doe | date:'shortDate' }}</p>
+          </div>
+          
+          <button class="btn btn-light" (click)="chooseCoupon(coupon, rowIndex * row.receivedCoupon.length + couponIndex)">Choose</button>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+</div> -->
 
-<div *ngIf="showDiv" [@fadeInOut] class="animated-div">
-  This div will be animated
-</div>
+
+<!-- <button class="btn btn-success" (click)="showRewards()">Click to get rewards</button> -->
+
+<!-- Display Selected Coupon -->
+<div *ngIf="selectedCoupon" class="selected-coupon">
+  <h3>Selected Coupon</h3>
+  <div class="card bg-success bg-gradient text-white">
+    <div class="card-body text-center">
+      <h2 class="card-text">{{ selectedCoupon.brandname }}</h2>
+      <p class="card-text">{{ selectedCoupon.title }}</p>
+      <p class="card-text">{{ selectedCoupon.desc }}</p>
+      <div class="card-text">
+        <p class="card-text bg-white text-dark border-4">Coupon Code: {{ selectedCoupon.code }}</p>
+        <p class="card-text">Start Date: {{ selectedCoupon.doc | date:'shortDate' }}</p>
+        <p class="card-text">End Date: {{ selectedCoupon.doe | date:'shortDate' }}</p>
+      </div>
+      <button class="btn btn-light">Redeem</button>
+
     </div>
   </div>
 </div>
+
+<!-- Display Coupons -->
+<div class="card-container">
+  <ng-container *ngFor="let row of resdata; let rowIndex = index">
+    <ng-container *ngFor="let coupon of row.receivedCoupon; let couponIndex = index">
+      <div class="card bg-success bg-gradient text-white" *ngIf="couponVisibility[rowIndex * row.receivedCoupon.length + couponIndex]">
+        <div class="card-body text-center">
+          <h2 class="card-text">{{ coupon.brandname }}</h2>
+          <p class="card-text">{{ coupon.title }}</p>
+          <p class="card-text">{{ coupon.desc }}</p>
+          <div *ngIf="showCouponCode" class="card-text">
+            <p class="card-text bg-white text-dark border-4">Coupon Code: {{ coupon.code }}</p>
+            <p class="card-text">Start Date: {{ coupon.doc | date:'shortDate' }}</p>
+            <p class="card-text">End Date: {{ coupon.doe | date:'shortDate' }}</p>
+          </div>
+          <button class="btn btn-light" (click)="chooseCoupon(coupon, rowIndex * row.receivedCoupon.length + couponIndex)">{{buttonText}}</button>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+</div>
+
+
+
+
+
+
+

@@ -1,9 +1,8 @@
 const mongoose = require('mongoose')
 //Coupon model
 const CouponSchema = mongoose.Schema({
-    rwcat:{type:String},
-    logo:{type:Image},
-    brandName:{type:String},
+    category:{type:String},
+    brandname:{type:String},
     title:{type:String},
     desc:{type:String},
     code:{type:String},

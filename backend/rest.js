@@ -11,7 +11,9 @@ const jwt = require('jsonwebtoken');
 const adminmodel = require('./adminmodel');
 const pickupModel = require('./pickup-model');
 const emprouteModel = require('./route-model');
-const emppickupModel = require("./epickupmodel")
+const emppickupModel = require("./epickupmodel");
+const couponModel = require('./coupon-model');
+const usercouponModel = require('./usercouponmodel ');
 mongoose.connect('mongodb://localhost:27017/gedb').then(()=>{console.log('Connected to DB')}).catch(()=>{console.log('Error connecting to DB')})
 
 app.use(bodyParser.json());
@@ -382,11 +384,90 @@ app.post('/emppudata',(req,res)=>{
 
 app.get('/emppureq', async(req,res)=>{
     const data = req.query.data;
-    console.log(data);
+    // console.log(data);
 
     
     const resdata = await emppickupModel.find({empId:data});
+    // console.log(resdata);
+    
+    return res.send(resdata)
+})
+
+app.post('/addcoupon', (req,res)=>{
+    const coupondata = new couponModel(
+        {
+            category:req.body.category,
+            brandname: req.body.brandname,
+            title:req.body.title,
+            desc:req.body.desc,
+            code:req.body.code,
+            doc:req.body.doc,
+            doe:req.body.doe,
+           
+              
+            
+        })
+        coupondata.save().then(result=>{
+            return res.status(201).json({
+                message:'Data entered',
+                status: 201
+            })
+        })
+        .catch(err=>{
+            
+                return res.status(401).json({
+                    message:'Data add failed',
+                    status:401
+            
+        })
+        
+})
+
+})
+
+app.get('/couponfind', async(req,res)=>{
+    const data = req.query.data;
+    console.log(data);
+    const resdata = await couponModel.find({category:data});
     console.log(resdata);
+    
+    return res.send(resdata)
+})
+
+app.post('/uscudata', (req,res)=>{
+    const usercoupondata = new usercouponModel(
+        {
+            userid:req.body.userid,
+            receivedCoupon:req.body.receivedCoupon
+           
+              
+            
+        })
+        usercoupondata.save().then(result=>{
+            return res.status(201).json({
+                message:'Data entered',
+                status: 201
+            })
+        })
+        .catch(err=>{
+            
+                return res.status(401).json({
+                    message:'Data add failed',
+                    status:401
+            
+        })
+        
+})
+
+})
+
+
+app.get('/findusercun', async(req,res)=>{
+    const data = req.query.data;
+   //  console.log(data);
+       
+    const resdata = await usercouponModel.find({userid:data});
+    //console.log(resdata);
     
     return res.send(resdata)
 })
