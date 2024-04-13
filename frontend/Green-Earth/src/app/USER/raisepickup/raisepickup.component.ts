@@ -25,7 +25,7 @@ export class RaisepickupComponent implements OnInit {
       email:new FormControl(''),
       date:new FormControl(''),
       time:new FormControl(''),
-      rwcat:new FormControl('')
+      category:new FormControl('')
 
 
     })
@@ -34,7 +34,7 @@ export class RaisepickupComponent implements OnInit {
 pickUpSubmit()
 {
   
-  this.dataservice.addPickup(this.current_userid, this.pickupform.value.name, this.pickupform.value.address, this.pickupform.value.pincode, this.pickupform.value.phno, this.pickupform.value.email,this.pickupform.value.date, this.pickupform.get('time')?.value, this.pickupform.get('rwcat')?.value)
+  this.dataservice.addPickup(this.current_userid, this.pickupform.value.name, this.pickupform.value.address, this.pickupform.value.pincode, this.pickupform.value.phno, this.pickupform.value.email,this.pickupform.value.date, this.pickupform.get('time')?.value, this.pickupform.get('category')?.value)
   
 }
 }

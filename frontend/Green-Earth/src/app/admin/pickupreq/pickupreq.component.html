@@ -1,8 +1,8 @@
 
 
-<button type="button" class="btn btn-primary me-3" (click)="findAllpickup()">
+<!-- <button type="button" class="btn btn-primary me-3" (click)="findAllpickup()">
     View Pickup Requests
-  </button>
+  </button> -->
 
 
 <div class="col-lg-12 p-lg-5 ">
@@ -10,7 +10,7 @@
     <table class="table table-hover">
       <thead class="thead-dark">
         <tr>
-          <th scope="col">OrderId</th>
+          <th scope="col">PickupId</th>
           <th scope="col">UserId</th>
           <th scope="col">Name</th>
           <th scope="col">Addrress</th>
@@ -35,9 +35,12 @@
           <td>{{ row.email }}</td>
           <td>{{ row.date }}</td>
           <td>{{ row.time }}</td>
-          <td>{{ row.rwcat }}</td>
-          <td><button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#exampleModal">Assign employee</button></td>
-          <td class="text-danger">Status text</td>
+          <td>{{ row.category }}</td>
+          <td>
+            <button class="btn" [ngClass]="getButtonColor(row.status)" data-bs-toggle="modal" data-bs-target="#exampleModal"> {{ getButtonText(row.status) }}</button>
+          </td>
+          
+          <td class="text-danger">{{row.status}}</td>
         </tr>
 
 
@@ -67,7 +70,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" (click)="assignEmp()">Save</button>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="assignEmp()">Save</button>
         </div>
       </div>
     </div>

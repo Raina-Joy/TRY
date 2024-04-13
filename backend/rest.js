@@ -35,6 +35,8 @@ app.post('/sign-up', (req,res)=>{
         const signup = new signupModel(
             {
                 name: req.body.name,
+                phno:req.body.phno,
+                email:req.body.email,
                 password: hash
             })
   
@@ -42,11 +44,13 @@ app.post('/sign-up', (req,res)=>{
     signup.save().then(result=>{
         res.status(201).json({
             message:'User Created',
+            status:true,
             result: result
         })
     }).catch(err=>{
         res.status(500).json({
             message:'Error occured',
+            status:false,
             error:err
 
         })  
@@ -57,51 +61,47 @@ app.post('/sign-up', (req,res)=>{
 
 // 
 
-app.post('/login',(req,res)=>{
+app.post('/login', (req, res) => {
     let userFound;
+    let userNotFound = false;
+    let incorrectPassword = false;
 
-    signupModel.findOne({name:req.body.name})
-    .then(user=>{
-        if(!user)
-            {
-                return res.status(401).json({
-                    'message':'User not found',
-                    status:402
-                })
-                
-              
+    signupModel.findOne({ phno: req.body.phno })
+        .then(user => {
+            if (!user) {
+                userNotFound = true;
+                return;
             }
             userFound = user;
-            return bcrypt.compare(req.body.password, user.password)
-    }).then(result=>{
-        if(!result)
-        {
-            return res.status(401).json({
-                message:'Password is incorrect',
-                status:401
-            })
-            
-        }
-       
+            return bcrypt.compare(req.body.password, user.password);
+        }).then(result => {
+            if (userNotFound) {
+                return res.status(401).json({
+                    'message': 'User not found',
+                    status: 402
+                });
+            }
 
-        const token = jwt.sign({name:userFound.name, userId:userFound._id},"secret_string",{expiresIn:"1h"})
-        return res.status(200).json({
-            token:token,
-            expiresIn: 3600,
-            status:200,
-            currentuser:userFound.name,
-            currentuserid:userFound._id
-            
+            if (!result) {
+                incorrectPassword = true;
+                return;
+            }
+
+            const token = jwt.sign({ name: userFound.name, userId: userFound._id }, "secret_string", { expiresIn: "1h" });
+            return res.status(200).json({
+                token: token,
+                expiresIn: 3600,
+                status: 200,
+                currentuser: userFound.name,
+                currentuserid: userFound._id
+            });
         })
-        
-    })
-    .catch(err=>{
-        return res.status(401).json({
-            message:'Error with authentification'
-        })
-        
-    })
-})
+        .catch(err => {
+            return res.status(401).json({
+                message: 'Error with authentication'
+            });
+        });
+});
 
 
 ////Employee data
@@ -236,7 +236,9 @@ app.post('/loginadmin',(req,res)=>{
         const token = jwt.sign({name:userFound.name, userId:userFound._id},"secret_string",{expiresIn:"1h"})
         return res.status(200).json({
             token:token,
-            expiresIn: 3600
+            expiresIn: 3600, 
+            currentuser:userFound.name,
+            currentuserid:userFound._id
         })
         
     })
@@ -262,7 +264,7 @@ app.post('/addpickup',(req,res)=>{
             email:req.body.email,
             date:req.body.date,
             time:req.body.time,
-            rwcat:req.body.rwcat
+            category:req.body.category
         })
         pickup.save().then(result=>{
             return res.status(201).json({
@@ -274,6 +276,7 @@ app.post('/addpickup',(req,res)=>{
             
                 return res.status(401).json({
                     message:'Data add failed',
+                    error:err,
                     status:401
             
         })

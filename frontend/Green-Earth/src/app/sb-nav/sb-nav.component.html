@@ -4,6 +4,9 @@
             <div class="user-profile-image">
                 <img src="../../../assets/tav.png" alt="user-profile-icon">
             </div>
+            <p>Hai {{current_user}}</p>
+            <!-- <p>{{current_userid}}</p> -->
+
         </li>
         <li>
             <a [routerLink]="['dashboard']">
@@ -49,7 +52,7 @@
             </a>
         </li>
         <li>
-            <a data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <a data-bs-toggle="modal" data-bs-target="#exampleModallogout">
                 <div class="icon">
                     <i class="bi bi-power"></i>
                 </div>

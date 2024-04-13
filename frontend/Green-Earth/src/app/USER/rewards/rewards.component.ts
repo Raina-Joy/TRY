@@ -44,7 +44,7 @@ export class RewardsComponent implements OnInit {
   chooseCoupon(coupon: any, index: number) {
     this.selectedCoupon = coupon; // Set the selected coupon
     this.showCouponCode = true; // Show coupon code
-    this.couponVisibility = this.couponVisibility.map((visibility, i) => i === index); // Hide unselected coupons
+    this.couponVisibility = this.couponVisibility.map((visibility, i) => i === index);
 
     // Check if the current date is past the end date
     const currentDate = new Date();
@@ -57,6 +57,7 @@ export class RewardsComponent implements OnInit {
 
     // Save selected coupon to Local Storage with user ID in the key
     localStorage.setItem(`selectedCoupon_${this.current_userId}`, JSON.stringify(this.selectedCoupon));
-    this.buttonText = "Redeem"
+    this.buttonText = this.selectedCoupon ? "Redeem" : "Choose";
+
   }
 }

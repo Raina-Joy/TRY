@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { ExpressionType } from "@angular/compiler";
-import { AuthModel } from "./auth-model";
+import { AuthModelSignup } from "./auth-model-signup";
+import { AuthModelLogin } from "./auth-model";
 import { AuthModelEmp } from "./auth-modelemp";
 import { AuthModelAdmin } from "./auth-admin";
 import { Injectable } from "@angular/core";
@@ -38,17 +39,22 @@ export class AuthService
         return this.curuser_id;
     }
     constructor(private http:HttpClient, private router:Router ){}
-    signupUser(name:string,password:string)
+    signupUser(name:string,phno:number, email:string, password:string)
     {
-        const authData: AuthModel = {name:name,password:password};
-        this.http.post('http://localhost:3000/sign-up',authData).subscribe(res=>
+        const authData: AuthModelSignup = {name:name, phno:phno, email:email,password:password};
+        console.log(authData);
+        this.http.post('http://localhost:3000/sign-up',authData).subscribe((res:any)=>
         {
             console.log(res);
+            
+            this.router.navigate(['login']);
+            
+
         })
     }
 
-    loginUser(username: string, password: string){
-        const authData: AuthModel = {name: username, password: password};
+    loginUser(phno: number, password: string){
+        const authData: AuthModelLogin = {phno: phno, password: password};
 
         this.http.post<{token:string, expiresIn:number, status:number, currentuser:string, currentuserid:string}>('http://localhost:3000/login/', authData)
             .subscribe((res)=> { 
@@ -284,10 +290,15 @@ signupEmp(name:string, address:string, pincode:number, phno:number, email:string
 //admin
 
 loginAdmin(username: string, password: string){
-    const authEmpData: AuthModelAdmin = {name: username, password: password};
+    const authadminData: AuthModelAdmin = {name: username, password: password};
 
-    this.http.post<{token:string, expiresIn:number}>('http://localhost:3000/loginadmin/', authEmpData)
+    this.http.post<{token:string, expiresIn:number, status:number, currentuser:string, currentuserid:string}>('http://localhost:3000/loginadmin/', authadminData)
         .subscribe(res => {
+            console.log(res);
+            
+            this.curuser_id = res.currentuserid;
+            console.log(this.curuser_id);
+            this.curuser = res.currentuser;
             this.token = res.token;
             if(this.token)
             {
@@ -300,11 +311,10 @@ loginAdmin(username: string, password: string){
                 }, res.expiresIn * 1000);
                 const now = new Date();
                 const expiresDate = new Date(now.getTime()+(res.expiresIn*1000));
-                this.storeLoginDetails(this.token, expiresDate, this.curuser, this.curuser_id);
+                this.storeAdminLoginDetails(this.token, expiresDate, this.curuser, this.curuser_id);
             }
         })
 }
-
 
 logoutAdmin()
 {
@@ -313,59 +323,60 @@ logoutAdmin()
     this.authenticatedSub.next(false);
     this.router.navigate(['adminlogin']);
     clearTimeout(this.logoutTimer);
-    this.clearEmpLoginDetails();
+    this.clearAdminLoginDetails();
 
 }
 
 storeAdminLoginDetails(token:string, expirationDate:Date, currentuser:string, currentuserid:string)
-{
-    localStorage.setItem('usercurid',currentuserid)
-    localStorage.setItem('usercur',currentuser)
-    localStorage.setItem('token',token);
-    localStorage.setItem('expiresIn',expirationDate.toISOString());
+    {
+        
+        localStorage.setItem('usercur',currentuser)
+        localStorage.setItem('usercurid',currentuserid);
+        localStorage.setItem('token',token);
+        localStorage.setItem('expiresIn',expirationDate.toISOString());
 
-}
+    }
 clearAdminLoginDetails()
-{
-    localStorage.removeItem('usercur');
-    localStorage.removeItem('usercurid');
-    localStorage.removeItem('token');
-    localStorage.removeItem('expiresIn');
-}
+    {
+        localStorage.removeItem('usercur');
+        localStorage.removeItem('usercurid');
+        localStorage.removeItem('token');
+        localStorage.removeItem('expiresIn');
+    }
+
 getAdminLocalStorageData()
 {
     const username = localStorage.getItem('usercur')
-    const userid = localStorage.getItem('usercurid')
-    const token = localStorage.getItem('token');
-    const expiresIn = localStorage.getItem('expiresIn');
-    if(!token || !expiresIn)
-    {
-        return;
-    }
-    return{
-        'token':token,
-        'expiresIn': new Date(expiresIn),
-        'user':username,
-        'user_id':userid
-    }
+        const userid = localStorage.getItem('usercurid')
+        const token = localStorage.getItem('token');
+        const expiresIn = localStorage.getItem('expiresIn');
+        if(!token || !expiresIn)
+        {
+            return;
+        }
+        return{
+            'token':token,
+            'expiresIn': new Date(expiresIn),
+            'user':username,
+            'user_id':userid
+        }
 }
 
 authenticateAdminFromLocalStorage(){
     const localStorageData = this.getAdminLocalStorageData();
-    if(localStorageData){
-        const now = new Date();
-        const expiresIn = localStorageData.expiresIn.getTime() - now.getTime();
+        if(localStorageData){
+            const now = new Date();
+            const expiresIn = localStorageData.expiresIn.getTime() - now.getTime();
 
-        if(expiresIn > 0){
-     this.curuser_id =  JSON.stringify(localStorageData.user_id);
-
-       this.curuser =  JSON.stringify(localStorageData.user);
-            this.token = localStorageData.token;
-            this.isAuthenticated = true;
-            this.authenticatedSub.next(true);
-            this.logoutTimer.setTimeout(expiresIn / 1000);
+            if(expiresIn > 0){
+         this.curuser_id =  JSON.stringify(localStorageData.user_id);
+           this.curuser =  JSON.stringify(localStorageData.user);
+                this.token = localStorageData.token;
+                this.isAuthenticated = true;
+                this.authenticatedSub.next(true);
+                this.logoutTimer.setTimeout(expiresIn / 1000);
+            }
         }
-    }
 
 }
 }

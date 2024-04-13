@@ -14,7 +14,7 @@ export class LoginComponent implements OnInit {
   constructor(private authservice:AuthService){}
 ngOnInit(): void {
   this.loginForm = new FormGroup({
-    'name':new FormControl(''),
+    'phno':new FormControl(''),
     'password': new FormControl('')
     
   })
@@ -22,7 +22,7 @@ ngOnInit(): void {
 onSubmit()
 {
   
- this.authservice.loginUser(this.loginForm.value.name, this.loginForm.value.password);
+ this.authservice.loginUser(this.loginForm.value.phno, this.loginForm.value.password);
   
 
 }

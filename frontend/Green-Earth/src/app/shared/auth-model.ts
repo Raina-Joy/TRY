@@ -1,5 +1,5 @@
-export interface AuthModel
+export interface AuthModelLogin
 {
-    name:string,
+    phno:number,
     password:string
 }

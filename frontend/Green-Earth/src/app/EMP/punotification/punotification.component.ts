@@ -39,7 +39,7 @@ export class PunotificationComponent implements OnInit {
     // Store the clicked row
     this.selectedRow = item;
     this.userid = item.pickupData.userid;
-    this.category = item.pickupData.rwcat;
+    this.category = item.pickupData.category;
     console.log("user id", this.userid)
     console.log("Category", this.category)
 

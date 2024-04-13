@@ -14,12 +14,14 @@ export class SignupComponent implements OnInit {
   ngOnInit(): void {
     this.signupForm = new FormGroup({
       'name':new FormControl(''),
+      'phno':new FormControl(''),
+      'email':new FormControl(''),
       'password': new FormControl('')
     })
 }
 onSubmit()
 {
-  this.authservice.signupUser(this.signupForm.value.name, this.signupForm.value.password)
+  this.authservice.signupUser(this.signupForm.value.name, this.signupForm.value.phno, this.signupForm.value.email, this.signupForm.value.password)
   
 }
 }

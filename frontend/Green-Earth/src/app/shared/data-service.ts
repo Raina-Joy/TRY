@@ -14,9 +14,9 @@ export class DataService
     rewards:any;
 
     constructor(private http:HttpClient, private router:Router ){}
-    addPickup( userid:string, name:string, address:string,pincode:number,phno:number, email:string,date:string,time:string, rwcat:string)
+    addPickup( userid:string, name:string, address:string,pincode:number,phno:number, email:string,date:string,time:string, category:string)
     {
-        const pickupdata: PickupDataModal = {userid:userid, name:name, address:address,pincode:pincode,phno:phno, email:email,date:date,time:time, rwcat:rwcat};
+        const pickupdata: PickupDataModal = {userid:userid, name:name, address:address,pincode:pincode,phno:phno, email:email,date:date,time:time, category:category};
         console.log(pickupdata);
         this.http.post('http://localhost:3000/addpickup',pickupdata).subscribe(res=>
         {

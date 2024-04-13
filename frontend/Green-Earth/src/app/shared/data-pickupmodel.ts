@@ -8,5 +8,5 @@ export interface PickupDataModal
     email:string,
     date:string,
     time:string,
-    rwcat:string,  
+    category:string,  
 }
