@@ -15,6 +15,8 @@ export class AuthService
     private token: string;
     private curuser:string;
     private curuser_id:string;
+    private cuid:string;
+
     private status: number;
     private msg: string;
     private authenticatedSub = new Subject<boolean>();
@@ -33,6 +35,10 @@ export class AuthService
     getUser()
     {
         return this.curuser;
+    }
+    getCustomuserid()
+    {
+        return this.cuid;
     }
     getUserId()
     {
@@ -56,10 +62,12 @@ export class AuthService
     loginUser(phno: number, password: string){
         const authData: AuthModelLogin = {phno: phno, password: password};
 
-        this.http.post<{token:string, expiresIn:number, status:number, currentuser:string, currentuserid:string}>('http://localhost:3000/login/', authData)
-            .subscribe((res)=> { 
+        this.http.post<{token:string, expiresIn:number, status:number, currentuser:string, currentuserid:string, cuid:string}>('http://localhost:3000/login/', authData)
+            .subscribe((res)=> {
+                console.log(res) 
                 this.curuser_id = res.currentuserid;
                 this.curuser = res.currentuser;
+                this.cuid = res.cuid;
                 this.token = res.token;
                 
                 if(this.token)
@@ -74,7 +82,7 @@ export class AuthService
                     }, res.expiresIn * 1000);
                     const now = new Date();
                     const expiresDate = new Date(now.getTime()+(res.expiresIn*1000));
-                    this.storeLoginDetails(this.token, expiresDate, this.curuser, this.curuser_id);
+                    this.storeLoginDetails(this.token, expiresDate, this.curuser, this.curuser_id, this.cuid);
                 }
    
             }, (error) => {
@@ -112,10 +120,11 @@ export class AuthService
     
     }
 
-    storeLoginDetails(token:string, expirationDate:Date, currentuser:string, currentuserid:string)
+    storeLoginDetails(token:string, expirationDate:Date, currentuser:string, currentuserid:string, customuserid:string)
     {
         localStorage.setItem('usercur',currentuser);
         localStorage.setItem('usercurid',currentuserid);
+        localStorage.setItem('cusuid',customuserid);
         localStorage.setItem('token',token);
         localStorage.setItem('expiresIn',expirationDate.toISOString());
 
@@ -125,6 +134,7 @@ export class AuthService
         
         localStorage.removeItem('usercur');
         localStorage.removeItem('usercurid');
+        localStorage.removeItem('cusuid');  
         localStorage.removeItem('token');
         localStorage.removeItem('expiresIn');
     }
@@ -132,6 +142,7 @@ export class AuthService
     {
         const username = localStorage.getItem('usercur')
         const userid = localStorage.getItem('usercurid')
+        const customuid = localStorage.getItem('cusuid')
         const token = localStorage.getItem('token');
         const expiresIn = localStorage.getItem('expiresIn');
         if(!token || !expiresIn)
@@ -142,7 +153,8 @@ export class AuthService
             'token':token,
             'expiresIn': new Date(expiresIn),
             'user':username,
-            'user_id':userid
+            'user_id':userid,
+            'custom_uid':customuid
         }
     }
     
@@ -154,6 +166,8 @@ export class AuthService
 
             if(expiresIn > 0){
          this.curuser_id =  JSON.stringify(localStorageData.user_id);
+         this.cuid =  JSON.stringify(localStorageData.custom_uid);
+
 
            this.curuser =  JSON.stringify(localStorageData.user);
                 this.token = localStorageData.token;

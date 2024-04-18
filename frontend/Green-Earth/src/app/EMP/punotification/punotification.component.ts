@@ -12,7 +12,10 @@ export class PunotificationComponent implements OnInit {
   public responseData: any;
   public current_userId:string;
   public userid : string;
+  public pickupid : string;
   public category: string;
+  public status: string;
+
   public res:any;
   selectedRow: any;
   constructor(private http:HttpClient, private dataservice:DataService, private authservice:AuthService){}
@@ -38,24 +41,103 @@ export class PunotificationComponent implements OnInit {
   onRowClick(item: any):void {
     // Store the clicked row
     this.selectedRow = item;
-    this.userid = item.pickupData.userid;
+    this.userid = item.pickupData.cuid;
+    this.pickupid = item.pickupData._id;
     this.category = item.pickupData.category;
+    
     console.log("user id", this.userid)
     console.log("Category", this.category)
 
 
   }
+  confirmStatus() {
+    this.status = 'Confirmed';
+    this.dataservice.sendStatus(this.status, this.pickupid).subscribe(
+      response => {
+        // Handle success response
+        console.log("Status confirmed successfully");
+        // Optionally, you can update responseData or perform any other action here
+      },
+      error => {
+        // Handle error response
+        console.error("Error confirming status:", error);
+      }
+    );
+  }
 
   sendReward()
   {
-
+    this.status = 'Finished';
+    this.dataservice.sendStatus(this.status, this.pickupid).subscribe(
+      response => {
+        // Handle success response
+        console.log("Status confirmed successfully");
+        // Optionally, you can update responseData or perform any other action here
+      },
+      error => {
+        // Handle error response
+        console.error("Error finishing status:", error);
+      }
+    );
     this.dataservice.fetchCoupon(this.category).subscribe(data=>{
       //console.log(data)
       this.res = data;
-    this.dataservice.usersCoupondata(this.userid,this.res)
+    this.dataservice.usersCoupondata(this.userid,this.res);
     })
 
 
     
   }
 }
+
+// confirmStatus() {
+//   this.status = 'Confirmed';
+//   this.dataservice.sendStatus(this.status, this.pickupid).subscribe(
+//     response => {
+//       // Handle success response
+//       console.log("Status confirmed successfully");
+//       // Optionally, you can update responseData or perform any other action here
+//     },
+//     error => {
+//       // Handle error response
+//       console.error("Error confirming status:", error);
+//     }
+//   );
+// }
+
+// sendReward() {
+//   this.status = 'Finished';
+//   this.dataservice.sendStatus(this.status, this.pickupid).subscribe(
+//     response => {
+//       // Handle success response
+//       console.log("Status updated to Finished successfully");
+//       // Fetch coupon and update user's coupon data
+//       this.dataservice.fetchCoupon(this.category).subscribe(
+//         data => {
+//           // Handle success fetching coupon
+//           console.log("Coupon fetched successfully");
+//           this.res = data;
+//           this.dataservice.usersCoupondata(this.userid, this.res).subscribe(
+//             userData => {
+//               // Handle success updating user's coupon data
+//               console.log("User's coupon data updated successfully");
+//             },
+//             userError => {
+//               // Handle error updating user's coupon data
+//               console.error("Error updating user's coupon data:", userError);
+//             }
+//           );
+//         },
+//         couponError => {
+//           // Handle error fetching coupon
+//           console.error("Error fetching coupon:", couponError);
+//         }
+//       );
+//     },
+//     error => {
+//       // Handle error updating status
+//       console.error("Error updating status:", error);
+//     }
+//   );
+// }
+

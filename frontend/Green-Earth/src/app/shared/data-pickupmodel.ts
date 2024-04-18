@@ -1,6 +1,6 @@
 export interface PickupDataModal
 {
-    userid:string,
+    cuid:string,
     name:string,
     address:string,
     pincode:number,
@@ -9,4 +9,5 @@ export interface PickupDataModal
     date:string,
     time:string,
     category:string,  
+    status:string
 }

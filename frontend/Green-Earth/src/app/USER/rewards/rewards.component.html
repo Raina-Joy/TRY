@@ -23,9 +23,25 @@
 
 
 <button class="btn btn-success" (click)="showRewards()">Click to get rewards</button>
+<div class="card-deck">
+  <div class="card" *ngFor="let coupon of userCouponData.receivedCoupon">
+    <div class="card-header">{{ coupon.brandname }}</div>
+    <div class="card-body">
+      <h5 class="card-title">{{ coupon.title }}</h5>
+      <p class="card-text">{{ coupon.desc }}</p>
+    </div>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">Category: {{ coupon.category }}</li>
+      <li class="list-group-item">Code: {{ coupon.code }}</li>
+      <li class="list-group-item">Valid From: {{ coupon.doc | date }}</li>
+      <li class="list-group-item">Valid Until: {{ coupon.doe | date }}</li>
+    </ul>
+  </div>
+</div>
+
 
 <!-- Display Selected Coupon -->
-<div *ngIf="selectedCoupon" class="selected-coupon">
+<!-- <div *ngIf="selectedCoupon" class="selected-coupon">
   <h3>Selected Coupon</h3>
   <div class="card bg-success bg-gradient text-white">
     <div class="card-body text-center">
@@ -41,10 +57,10 @@
 
     </div>
   </div>
-</div>
+</div> -->
 
 <!-- Display Coupons -->
-<div class="card-container">
+<!-- <div class="card-container">
   <ng-container *ngFor="let row of resdata; let rowIndex = index">
     <ng-container *ngFor="let coupon of row.receivedCoupon; let couponIndex = index">
       <div class="card bg-success bg-gradient text-white" *ngIf="couponVisibility[rowIndex * row.receivedCoupon.length + couponIndex]">
@@ -62,7 +78,7 @@
       </div>
     </ng-container>
   </ng-container>
-</div>
+</div> -->
 
 
 

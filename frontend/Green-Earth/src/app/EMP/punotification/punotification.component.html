@@ -10,8 +10,9 @@
     <table class="table table-hover">
       <thead class="thead-dark">
         <tr>
-          <th scope="col">OrderId</th>
-          <th scope="col">UserId</th>
+          <th scope="col">Notification Date</th>
+          <!-- <th scope="col">OrderId</th>
+          <th scope="col">UserId</th> -->
           <th scope="col">Name</th>
           <th scope="col">Addrress</th>
           <th scope="col">Pincode</th>
@@ -20,13 +21,15 @@
           <th scope="col">Date</th>
           <th scope="col">Time</th>
           <th scope="col">Action</th>
+          
           <th scope="col">Status</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let row of responseData" (click)="onRowClick(row)">
-          <td>{{ row.pickupData._id }}</td>
-          <td>{{ row.pickupData.userid }}</td>
+          <td>{{ row.assigndate}}</td>
+          <!-- <td>{{ row.pickupData._id }}</td>
+          <td>{{ row.pickupData.cuid }}</td> -->
           <td>{{ row.pickupData.name }}</td>
           <td>{{ row.pickupData.address }}</td>
           <td>{{ row.pickupData.pincode }}</td>
@@ -34,7 +37,11 @@
           <td>{{ row.pickupData.email }}</td>
           <td>{{ row.pickupData.date }}</td>
           <td>{{ row.pickupData.time }}</td>
-          <td class="text-danger "><button class="btn btn-info">Confirm</button> <br> <button class="btn btn-warning " (click)="sendReward()">Finish</button></td>
+
+          <td class="text-danger "><button class="btn btn-info" (click)="confirmStatus()">Confirm</button> <br> <button class="btn btn-warning " (click)="sendReward()">Finish</button></td>
+          <td>{{ row.status}}</td>
+
+
         </tr>
 
 

@@ -9,7 +9,8 @@ const bcrypt = require('bcrypt');
 const app = express();
 const jwt = require('jsonwebtoken');
 const adminmodel = require('./adminmodel');
-const pickupModel = require('./pickup-model');
+const pickupTable = require("./pickup-model")
+const assignedpickupTable = require('./assigned-pickup-model')
 const emprouteModel = require('./route-model');
 const emppickupModel = require("./epickupmodel");
 const couponModel = require('./coupon-model');
@@ -34,6 +35,7 @@ app.post('/sign-up', (req,res)=>{
     {
         const signup = new signupModel(
             {
+                
                 name: req.body.name,
                 phno:req.body.phno,
                 email:req.body.email,
@@ -87,13 +89,14 @@ app.post('/login', (req, res) => {
                 return;
             }
 
-            const token = jwt.sign({ name: userFound.name, userId: userFound._id }, "secret_string", { expiresIn: "1h" });
+            const token = jwt.sign({ name: userFound.name, userId: userFound._id}, "secret_string", { expiresIn: "1h" });
             return res.status(200).json({
                 token: token,
                 expiresIn: 3600,
                 status: 200,
                 currentuser: userFound.name,
-                currentuserid: userFound._id
+                currentuserid: userFound._id,
+                cuid:userFound.cuid
             });
         })
         .catch(err => {
@@ -253,10 +256,26 @@ app.post('/loginadmin',(req,res)=>{
 
 //Data section
 
+app.get('/findpickupbyid', async (req, res) => {
+    try {
+        const cuid = req.query.data; // Access cuid from query parameters
+        console.log('fetched cuid ', cuid);
+        const pickups = await pickupTable.find({ cuid });
+        res.status(200).json(pickups);
+    } catch (error) {
+        console.error('Error fetching pickups by cuid:', error);
+        res.status(500).json({ success: false, message: 'Failed to fetch pickups by cuid', error: error.message });
+    }
+});
+
+
+
+  
+
 app.post('/addpickup',(req,res)=>{
-    const pickup = new pickupModel(
+    const pickuptable = new pickupTable(
         {
-            userid:req.body.userid,
+            cuid:req.body.cuid,
             name: req.body.name,
             address:req.body.address,
             phno:req.body.phno,
@@ -264,9 +283,10 @@ app.post('/addpickup',(req,res)=>{
             email:req.body.email,
             date:req.body.date,
             time:req.body.time,
-            category:req.body.category
+            category:req.body.category,
+            status:req.body.status
         })
-        pickup.save().then(result=>{
+        pickuptable.save().then(result=>{
             return res.status(201).json({
                 message:'Data entered',
                 status: 201
@@ -284,9 +304,36 @@ app.post('/addpickup',(req,res)=>{
 })
 })
 app.get('/allpickupreq',async(req,res)=>{
-    const allpickupreq = await pickupModel.find();
+    const allpickupreq = await pickupTable.find();
     res.send(allpickupreq)
 })
+
+// app.post('/assignpickup',(req,res)=>{
+//     const pickuptable = new pickupTable(
+//         {
+//             empid:req.body.empid,
+//             empname: req.body.empname,
+//             pickupid:req.body.pickupid,
+//             assigndate:req.body.assigndate,
+//             status:req.body.status
+//         })
+//         pickuptable.save().then(result=>{
+//             return res.status(201).json({
+//                 message:'Data entered',
+//                 status: 201
+//             })
+//         })
+//         .catch(err=>{
+            
+//                 return res.status(401).json({
+//                     message:'Data add failed',
+//                     error:err,
+//                     status:401
+            
+//         })
+        
+// })
+// })
 app.post('/addroute',(req,res)=>{
     const emproutemodel = new emprouteModel({
         empid:req.body.empid,
@@ -366,6 +413,10 @@ app.post('/emppudata',(req,res)=>{
             empId:req.body.empId,
             empName: req.body.empName,
             pickupData:req.body.pickupData,
+            assigndate:req.body.assigndate,
+            status:req.body.status
+
+
             
         })
         emppickupdata.save().then(result=>{
@@ -385,13 +436,48 @@ app.post('/emppudata',(req,res)=>{
 })
 })
 
+// async function updatePickupStatus(pickupId, newStatus) {
+//     try {
+//         const updatedPickup = await PickupModel.findByIdAndUpdate(pickupId, { status: newStatus }, { new: true });
+//         // Now, find and update corresponding entry in EmpPickupModel
+//         const empPickup = await EmpPickupModel.findOneAndUpdate({ pickupData: updatedPickup._id }, { status: newStatus }, { new: true });
+//         return { updatedPickup, empPickup };
+//     } catch (error) {
+//         console.error('Error updating status:', error);
+//         throw error;
+//     }
+// }
+app.get('/sendstatus', async(req, res)=>{
+    const status = req.query.status;
+    const pickupid = req.query.pickupid;
+    console.log("received data", status, pickupid);
+    try {
+        const updatedPickup = await pickupTable.findByIdAndUpdate(pickupid, { status: status }, { new: true });
+        const updatedempPickup = await emppickupModel.findOneAndUpdate(
+            { "pickupData._id": pickupid }, // Filter criteria to find matching pickupData._id
+            { $set: { "status": status } }, // Update operation to set the status
+            { new: true }
+        );
+
+        if (!updatedempPickup || !updatedPickup ) {
+            throw new Error("Failed to update status");
+        }
+
+        res.status(200).json({ success: true, message: "Status updated successfully" });
+    } catch (error) {
+        console.error('Error updating status:', error);
+        res.status(500).json({ success: false, message: "Failed to update status", error: error.message });
+    }
+});
+
+
 app.get('/emppureq', async(req,res)=>{
     const data = req.query.data;
-    // console.log(data);
+    console.log(data);
 
     
     const resdata = await emppickupModel.find({empId:data});
-    // console.log(resdata);
+     console.log(resdata);
     
     return res.send(resdata)
 })
@@ -437,6 +523,8 @@ app.get('/couponfind', async(req,res)=>{
     return res.send(resdata)
 })
 
+
+
 app.post('/uscudata', (req,res)=>{
     const usercoupondata = new usercouponModel(
         {
@@ -465,15 +553,25 @@ app.post('/uscudata', (req,res)=>{
 })
 
 
+// app.get('/findusercun', async(req,res)=>{
+//     const data = req.query.data;
+//    //  console.log(data);
+       
+//     const resdata = await usercouponModel.find({userid:data});
+//     //console.log(resdata);
+    
+//     return res.send(resdata)
+// })
 app.get('/findusercun', async(req,res)=>{
     const data = req.query.data;
-   //  console.log(data);
-       
-    const resdata = await usercouponModel.find({userid:data});
-    //console.log(resdata);
-    
-    return res.send(resdata)
-})
+    try {
+        const latestEntry = await usercouponModel.findOne({ userid: data }).sort({ _id: -1 });
+        return res.send(latestEntry);
+    } catch (error) {
+        console.error("Error finding latest entry:", error);
+        return res.status(500).send("Internal Server Error");
+    }
+});
 
 
 
