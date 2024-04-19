@@ -1,7 +1,9 @@
 export interface usersCoupondata
 {
     userid:string,
-    receivedCoupon: object
+
+    receivedCoupon: object,
+    state:string
   
 
 }

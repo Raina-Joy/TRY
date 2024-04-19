@@ -529,7 +529,8 @@ app.post('/uscudata', (req,res)=>{
     const usercoupondata = new usercouponModel(
         {
             userid:req.body.userid,
-            receivedCoupon:req.body.receivedCoupon
+            receivedCoupon:req.body.receivedCoupon,
+            state:req.body.state
            
               
             
@@ -564,12 +565,30 @@ app.post('/uscudata', (req,res)=>{
 // })
 app.get('/findusercun', async(req,res)=>{
     const data = req.query.data;
+   
     try {
         const latestEntry = await usercouponModel.findOne({ userid: data }).sort({ _id: -1 });
         return res.send(latestEntry);
     } catch (error) {
         console.error("Error finding latest entry:", error);
         return res.status(500).send("Internal Server Error");
+    }
+});
+app.get('/sendcouponstatus', async(req,res)=>{
+    const state = req.query.state;
+    const userid = req.query.userid;
+    console.log("received data", state, userid);
+    try {
+        const updatedusercoupon = await usercouponModel.findOneAndUpdate({userid:userid}, { state: state }, { new: true }).sort({ _id: -1 });
+       
+        if (!updatedusercoupon) {
+            throw new Error("Failed to update state");
+        }
+
+        res.status(200).json({ success: true, message: "State updated successfully" });
+    } catch (error) {
+        console.error('Error updating state:', error);
+        res.status(500).json({ success: false, message: "Failed to update state", error: error.message });
     }
 });
 

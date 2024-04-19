@@ -20,24 +20,67 @@
     </ng-container>
   </ng-container>
 </div> -->
+<!-- Button trigger modal -->
 
 
-<button class="btn btn-success" (click)="showRewards()">Click to get rewards</button>
-<div class="card-deck">
-  <div class="card" *ngFor="let coupon of userCouponData.receivedCoupon">
-    <div class="card-header">{{ coupon.brandname }}</div>
-    <div class="card-body">
-      <h5 class="card-title">{{ coupon.title }}</h5>
-      <p class="card-text">{{ coupon.desc }}</p>
+<!-- Modal -->
+<div class="modal fade" id="showrewards" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content">
+      
+      <div class="modal-body">
+        <div class="card-container mt-4">
+          <ng-container *ngFor="let coupon of userCouponData; let i= index">
+            <div class="card bg-success text-white" *ngIf="couponVisibility[i]">
+              <div class="card-body text-center">
+                <h3 class="card-header">{{coupon.brandname}}</h3>
+                <h5 class="card-title">{{ coupon.title }}</h5>
+                <p class="card-text">{{ coupon.desc }}</p>
+                <p class="card-text">Category: {{ coupon.category }}</p>
+                <div class=" layer bg-light text-success card-text" *ngIf="showCouponCode">
+                <p>Code: {{ coupon.code }}</p>
+                <p>Valid From: {{ coupon.doc | date }}</p>
+                <p>Valid Until: {{ coupon.doe | date }}</p>
+                </div>
+                <button class="btn btn-light" (click)="selectCoupon(coupon, i)">{{buttonText}}</button>
+              </div>
+            </div>
+        
+          </ng-container>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
     </div>
-    <ul class="list-group list-group-flush">
-      <li class="list-group-item">Category: {{ coupon.category }}</li>
-      <li class="list-group-item">Code: {{ coupon.code }}</li>
-      <li class="list-group-item">Valid From: {{ coupon.doc | date }}</li>
-      <li class="list-group-item">Valid Until: {{ coupon.doe | date }}</li>
-    </ul>
   </div>
 </div>
+
+<button *ngIf="showReward" class="btn btn-success" (click)="showRewards()" data-bs-toggle="modal" data-bs-target="#showrewards">Click to get rewards</button>
+<div class="selected-coupons-container mt-4">
+  <h3>Selected Coupons</h3>
+  <div class="card-container">
+    <ng-container *ngFor="let row of selectedCoupons; let i= index">
+      <div class="card bg-success text-white">
+        <div class="card-body text-center">
+          <h3 class="card-header">{{row.brandname}}</h3>
+          <h5 class="card-title">{{ row.title }}</h5>
+          <p class="card-text">{{ row.desc }}</p>
+          <p class="card-text">Category: {{ row.category }}</p>
+          <div class="layer bg-light text-success card-text" *ngIf="showCode">
+            <p>Code: {{ row.code }}</p>
+            <p>Valid From: {{ row.doc | date }}</p>
+            <p>Valid Until: {{ row.doe | date }}</p>
+          </div>
+          <button class="btn btn-light">Redeem</button>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+
+
 
 
 <!-- Display Selected Coupon -->
@@ -72,7 +115,7 @@
             <p class="card-text bg-white text-dark border-4">Coupon Code: {{ coupon.code }}</p>
             <p class="card-text">Start Date: {{ coupon.doc | date:'shortDate' }}</p>
             <p class="card-text">End Date: {{ coupon.doe | date:'shortDate' }}</p>
-          </div>
+          </d  civ>
           <button class="btn btn-light" (click)="chooseCoupon(coupon, rowIndex * row.receivedCoupon.length + couponIndex)">{{buttonText}}</button>
         </div>
       </div>

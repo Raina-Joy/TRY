@@ -138,10 +138,10 @@ export class DataService
        return this.http.get(urlWithParams);
         
      }
-     usersCoupondata(userid:string, data:object)
+     usersCoupondata(userid:string, data:object, state:string)
      {
         console.log(data);
-        const userscoupondata: usersCoupondata = {userid:userid, receivedCoupon:data}
+        const userscoupondata: usersCoupondata = {userid:userid, receivedCoupon:data, state:state}
 
         this.http.post('http://localhost:3000/uscudata',userscoupondata).subscribe(res=>{
             console.log(res)
@@ -158,4 +158,18 @@ export class DataService
        return this.http.get(urlWithParams);
         
      }
+    //  fetchUserCouponState(pickupid:string)
+    //  {
+    //     const apiUrl = 'http://localhost:3000/couponstate';
+    //     const urlWithParams = `${apiUrl}?data=${pickupid}`;
+    //    return this.http.get(urlWithParams);
+        
+    //  }
+    updateCouponState(couponState:string,userid:string)
+    {
+      const apiUrl = 'http://localhost:3000/sendcouponstatus';
+        const urlWithParams = `${apiUrl}?state=${couponState}&userid=${userid}`;
+        return this.http.get(urlWithParams);
+
+    }
     }

@@ -11,8 +11,8 @@
       <thead class="thead-dark">
         <tr>
           <th scope="col">Notification Date</th>
-          <!-- <th scope="col">OrderId</th>
-          <th scope="col">UserId</th> -->
+          <th scope="col">OrderId</th>
+          <!--<th scope="col">UserId</th> -->
           <th scope="col">Name</th>
           <th scope="col">Addrress</th>
           <th scope="col">Pincode</th>
@@ -28,8 +28,8 @@
       <tbody>
         <tr *ngFor="let row of responseData" (click)="onRowClick(row)">
           <td>{{ row.assigndate}}</td>
-          <!-- <td>{{ row.pickupData._id }}</td>
-          <td>{{ row.pickupData.cuid }}</td> -->
+           <td>{{ row.pickupData._id }}</td>
+          <!-- <td>{{ row.pickupData.cuid }}</td> -->
           <td>{{ row.pickupData.name }}</td>
           <td>{{ row.pickupData.address }}</td>
           <td>{{ row.pickupData.pincode }}</td>

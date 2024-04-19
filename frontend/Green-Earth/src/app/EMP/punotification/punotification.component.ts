@@ -15,6 +15,7 @@ export class PunotificationComponent implements OnInit {
   public pickupid : string;
   public category: string;
   public status: string;
+  public state:string;
 
   public res:any;
   selectedRow: any;
@@ -82,7 +83,8 @@ export class PunotificationComponent implements OnInit {
     this.dataservice.fetchCoupon(this.category).subscribe(data=>{
       //console.log(data)
       this.res = data;
-    this.dataservice.usersCoupondata(this.userid,this.res);
+      this.state='Not selected'
+    this.dataservice.usersCoupondata(this.userid,this.res,this.state);
     })
 
 
