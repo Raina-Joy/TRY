@@ -21,6 +21,8 @@ import { PuhistoryComponent } from './USER/puhistory/puhistory.component';
 import { RewardsComponent } from './USER/rewards/rewards.component';
 import { PickupreqComponent } from './admin/pickupreq/pickupreq.component';
 import { PunotificationComponent } from './EMP/punotification/punotification.component';
+import { EmppickuphistoryComponent } from './EMP/emppickuphistory/emppickuphistory.component';
+import { EarningsComponent } from './EMP/earnings/earnings.component';
 const routes: Routes = [
   {path:'', redirectTo:'home',pathMatch:'full'},
 
@@ -40,7 +42,12 @@ const routes: Routes = [
   ]},
   {path:'emp',component:EmpviewComponent,
   children:[
-    {path:'pickupnot',component:PunotificationComponent}
+    {path:'pickupnot',component:PunotificationComponent},
+    {path:'pickuphistory',component:EmppickuphistoryComponent},
+    {path:'earnings',component:EarningsComponent},
+
+
+
       
   ]},
   {path:'empsignup',component:EmpsignupComponent},

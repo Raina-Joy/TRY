@@ -9,5 +9,6 @@ export interface PickupDataModal
     date:string,
     time:string,
     category:string,  
-    status:string
+    status:string,
+    notifdate:string
 }

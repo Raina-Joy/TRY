@@ -1,29 +1,4 @@
-<!-- <p>{{current_userId}}</p>-->
-<!-- <button class="btn btn-success" (click)="showRewards()">Click to get rewards</button>
-<div class="card-container">
-  <ng-container *ngFor="let row of resdata; let rowIndex = index">
-    <ng-container *ngFor="let coupon of row.receivedCoupon; let couponIndex = index">
-      <div class="card bg-success bg-gradient text-white" *ngIf="couponVisibility[rowIndex * row.receivedCoupon.length + couponIndex]">
-        <div class="card-body text-center">
-          <h2 class="card-text">{{ coupon.brandname }}</h2>
-          <p class="card-text">{{ coupon.title }}</p>
-          <p class="card-text">{{ coupon.desc }}</p>
-          <div *ngIf="showCouponCode" class="card-text">
-          <p class="card-text bg-white text-dark border-4">Coupon Code: {{ coupon.code }}</p>
-          <p class="card-text">Start Date: {{ coupon.doc | date:'shortDate' }}</p>
-          <p class="card-text">End Date: {{ coupon.doe | date:'shortDate' }}</p>
-          </div>
-          
-          <button class="btn btn-light" (click)="chooseCoupon(coupon, rowIndex * row.receivedCoupon.length + couponIndex)">Choose</button>
-        </div>
-      </div>
-    </ng-container>
-  </ng-container>
-</div> -->
-<!-- Button trigger modal -->
 
-
-<!-- Modal -->
 <div class="modal fade" id="showrewards" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog modal-fullscreen">
     <div class="modal-content">
@@ -58,7 +33,7 @@
 
 <button *ngIf="showReward" class="btn btn-success" (click)="showRewards()" data-bs-toggle="modal" data-bs-target="#showrewards">Click to get rewards</button>
 <div class="selected-coupons-container mt-4">
-  <h3>Selected Coupons</h3>
+ 
   <div class="card-container">
     <ng-container *ngFor="let row of selectedCoupons; let i= index">
       <div class="card bg-success text-white">
@@ -78,53 +53,6 @@
     </ng-container>
   </div>
 </div>
-
-
-
-
-
-<!-- Display Selected Coupon -->
-<!-- <div *ngIf="selectedCoupon" class="selected-coupon">
-  <h3>Selected Coupon</h3>
-  <div class="card bg-success bg-gradient text-white">
-    <div class="card-body text-center">
-      <h2 class="card-text">{{ selectedCoupon.brandname }}</h2>
-      <p class="card-text">{{ selectedCoupon.title }}</p>
-      <p class="card-text">{{ selectedCoupon.desc }}</p>
-      <div class="card-text">
-        <p class="card-text bg-white text-dark border-4">Coupon Code: {{ selectedCoupon.code }}</p>
-        <p class="card-text">Start Date: {{ selectedCoupon.doc | date:'shortDate' }}</p>
-        <p class="card-text">End Date: {{ selectedCoupon.doe | date:'shortDate' }}</p>
-      </div>
-      <button class="btn btn-light">Redeem</button>
-
-    </div>
-  </div>
-</div> -->
-
-<!-- Display Coupons -->
-<!-- <div class="card-container">
-  <ng-container *ngFor="let row of resdata; let rowIndex = index">
-    <ng-container *ngFor="let coupon of row.receivedCoupon; let couponIndex = index">
-      <div class="card bg-success bg-gradient text-white" *ngIf="couponVisibility[rowIndex * row.receivedCoupon.length + couponIndex]">
-        <div class="card-body text-center">
-          <h2 class="card-text">{{ coupon.brandname }}</h2>
-          <p class="card-text">{{ coupon.title }}</p>
-          <p class="card-text">{{ coupon.desc }}</p>
-          <div *ngIf="showCouponCode" class="card-text">
-            <p class="card-text bg-white text-dark border-4">Coupon Code: {{ coupon.code }}</p>
-            <p class="card-text">Start Date: {{ coupon.doc | date:'shortDate' }}</p>
-            <p class="card-text">End Date: {{ coupon.doe | date:'shortDate' }}</p>
-          </d  civ>
-          <button class="btn btn-light" (click)="chooseCoupon(coupon, rowIndex * row.receivedCoupon.length + couponIndex)">{{buttonText}}</button>
-        </div>
-      </div>
-    </ng-container>
-  </ng-container>
-</div> -->
-
-
-
 
 
 

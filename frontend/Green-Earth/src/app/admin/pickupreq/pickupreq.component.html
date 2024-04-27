@@ -10,8 +10,8 @@
     <table class="table table-hover">
       <thead class="thead-dark">
         <tr>
-          <th scope="col">PickupId</th>
-          <th scope="col">UserId</th>
+          <th scope="col">Notif.date</th>
+          <!-- <th scope="col">UserId</th> -->
           <th scope="col">Name</th>
           <th scope="col">Addrress</th>
           <th scope="col">Pincode</th>
@@ -25,9 +25,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let row of responseData" (click)="onRowClick(row)">
-          <td>{{ row._id }}</td>
-          <td>{{ row.cuid }}</td>
+        <tr *ngFor="let row of responseData" [ngClass]="{'disabled-row': isRowDisabled(row.status)}" (click)="onRowClick(row)">
+          <td>{{ row.notifdate }}</td>
+          <!-- <td>{{ row.cuid }}</td> -->
           <td>{{ row.name}}</td>
           <td>{{ row.address }}</td>
           <td>{{ row.pincode }}</td>
@@ -37,7 +37,7 @@
           <td>{{ row.time }}</td>
           <td>{{ row.category }}</td>
           <td>
-            <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#exampleModal"> Assign Employee </button>
+            <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#exampleModal" [disabled]="isRowDisabled(row.status)"> Assign Employee </button>
           </td>
           
           <td class="text-danger">{{row.status}}</td>

@@ -5,14 +5,84 @@
       <button type="button" class="btn btn-primary me-3" (click)="findAllEmp()">
         View employees
       </button>
-      <button type="button" class="btn btn-primary me-3">
+      <button type="button" class="btn btn-primary me-3" (click)="findAllEmpRoutes()">
         View employees routes
       </button>
-
-     
+      <button type="button" class="btn btn-primary me-3" data-bs-toggle="modal" data-bs-target="#exampleModal"
+      data-bs-whatever="@mdo" (click)="addEmpRoutes()">
+        Add Employee routes
+      </button>
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Routes</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body ">
+        <form [formGroup]="routeForm">
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">Employee Name:</label>
+            <select class="form-select" formControlName="selectedEmp">
+              <option *ngFor="let item of responseData" [value]="item.name">{{ item.name }}</option>
+            </select>
+            
+            <!-- <p>The selected item is : {{routeForm.value.selectedOption}}</p> -->
+            
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">Postoffice 1:</label>
+            <select class="form-select" formControlName="selectedPost1">
+              <option *ngFor="let item of allpost " [value]="item.pincode">{{ item.postoffice}}</option>
+            </select>
+            
+            
+            <label for="recipient-name" class="col-form-label">Postoffice 2:</label>
+            <select class="form-select" formControlName="selectedPost2">
+              <option *ngFor="let item of allpost " [value]="item.pincode">{{ item.postoffice}}</option>
+            </select>
+            <label for="recipient-name" class="col-form-label">Postoffice 3:</label>
+            <select class="form-select" formControlName="selectedPost3">
+              <option *ngFor="let item of allpost " [value]="item.pincode">{{ item.postoffice}}</option>
+            </select>
+          </div>
+          <!-- <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">Empid:</label>
+            <input class="form-control" type="text" name="empid" id="empid" formControlName="empid">
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">Title:</label>
+            <input class="form-control" type="text" name="title" id="title" formControlName="title">
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">Description:</label>
+            <input class="form-control" type="text" name="desc" id="desc" formControlName="desc">
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">Code:</label>
+            <input class="form-control" type="text" name="code" id="code" formControlName="code">
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">DOC:</label>
+            <input class="form-control" type="date" name="doc" id="doc" formControlName="doc">
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">DOE:</label>
+            <input class="form-control" type="date" name="doe" id="doe" formControlName="doe">
+          </div>        -->
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" (click)="onSub()">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
     </div>
     <div class="col-lg-12 p-lg-5 ">
-      <table class="table" *ngIf="isViewEmployee">
+      <table class="table" *ngIf="show1">
         <thead class="thead-dark">
           <tr>
             <th scope="col">Id</th>
@@ -21,9 +91,6 @@
             <th scope="col">Pincode</th>
             <th scope="col">Phno</th>
             <th scope="col">Remove</th>
-
-
-
           </tr>
         </thead>
         <tbody>
@@ -35,6 +102,38 @@
             <td>{{ row.phno }}</td>
 
             <td><button class="btn btn-danger ">Delete</button></td>
+
+          </tr>
+
+
+        </tbody>
+      </table>
+    </div>
+
+
+
+    <div class="col-lg-12 p-lg-5 ">
+      <table class="table" *ngIf="show">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Pincode</th>
+            <th scope="col">Collection Pins</th>
+            <th scope="col">Actions</th>
+
+            
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of responseData1">
+            <td>{{ row.empname }}</td>
+            <td>{{ row.emppin }}</td>
+            <td>
+              <ul>
+                <li *ngFor="let pin of getCollectionPins(row.collectionpins)">{{ pin }}</li>
+              </ul>
+            </td>
+            <td><button class="btn btn-danger me-2">Delete</button><button class="btn btn-danger me-2">Edit</button></td>
 
           </tr>
 

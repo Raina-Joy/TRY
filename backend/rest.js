@@ -15,6 +15,8 @@ const emprouteModel = require('./route-model');
 const emppickupModel = require("./epickupmodel");
 const couponModel = require('./coupon-model');
 const usercouponModel = require('./usercouponmodel ');
+const pincodeModel = require('./pinmodel');
+const pinmodel = require('./pinmodel');
 mongoose.connect('mongodb://localhost:27017/gedb').then(()=>{console.log('Connected to DB')}).catch(()=>{console.log('Error connecting to DB')})
 
 app.use(bodyParser.json());
@@ -28,6 +30,10 @@ app.get('/allu',async(req,res)=>{
     const alluser = await signupModel.find();
     console.log(alluser);
     res.send(alluser);
+})
+app.get('/allpost',async(req,res)=>{
+    const allpost = await pinmodel.find();
+    res.send(allpost);
 })
 
 app.post('/sign-up', (req,res)=>{
@@ -284,7 +290,8 @@ app.post('/addpickup',(req,res)=>{
             date:req.body.date,
             time:req.body.time,
             category:req.body.category,
-            status:req.body.status
+            status:req.body.status,
+            notifdate:req.body.notifdate
         })
         pickuptable.save().then(result=>{
             return res.status(201).json({
@@ -363,7 +370,7 @@ app.post('/addroute',(req,res)=>{
     
 })
 
-app.get('/allroute',async(req,res)=>{
+app.get('/allemproute',async(req,res)=>{
     const allroute = await emprouteModel.find();
     res.send(allroute)
 })
@@ -447,19 +454,69 @@ app.post('/emppudata',(req,res)=>{
 //         throw error;
 //     }
 // }
-app.get('/sendstatus', async(req, res)=>{
+// app.get('/sendstatus', async(req, res)=>{
+//     const status = req.query.status;
+//     const pickupid = req.query.pickupid;
+//     console.log("received data", status, pickupid);
+//     try {
+       
+//         const updatedPickup = await pickupTable.findByIdAndUpdate(pickupid, { status: status }, { new: true });
+//         if(status === 'Finished')
+//         {
+//             const updatedfinishempPickup = await emppickupModel.findOneAndUpdate(
+//                 { "pickupData._id": pickupid }, // Filter criteria to find matching pickupData._id
+//                 { $set: { "status": status } },
+//                 { $set: { "pickupData.status": status } }, // Update operation to set the status
+//                 { $set: { "finisheddate": new Date() } },
+//                 { new: true }
+//             );
+//         }
+//         else
+//         {
+//             const updatedconfirmempPickup = await emppickupModel.findOneAndUpdate(
+//                 { "pickupData._id": pickupid }, // Filter criteria to find matching pickupData._id
+//                 { $set: { "status": status } },
+//                 { $set: { "pickupData.status": status } }, // Update operation to set the status
+//                 { $set: { "confirmdate": new Date() } },
+//                 { new: true }
+//             );
+//         }
+        
+
+//         if (!updatedconfirmempPickup || !updatedPickup || !updatedfinishempPickup ) {
+//             throw new Error("Failed to update status");
+//         }
+
+//         res.status(200).json({ success: true, message: "Status updated successfully" });
+//     } catch (error) {
+//         console.error('Error updating status:', error);
+//         res.status(500).json({ success: false, message: "Failed to update status", error: error.message });
+//     }
+// });
+
+app.get('/sendstatus', async(req, res) => {
     const status = req.query.status;
     const pickupid = req.query.pickupid;
     console.log("received data", status, pickupid);
     try {
         const updatedPickup = await pickupTable.findByIdAndUpdate(pickupid, { status: status }, { new: true });
+
+        let updateOperations = { "status": status };
+        if (status === 'Finished') {
+            updateOperations["pickupData.status"] = status;
+            updateOperations["finisheddate"] = new Date();
+        } else {
+            updateOperations["pickupData.status"] = status;
+            updateOperations["confirmdate"] = new Date();
+        }
+
         const updatedempPickup = await emppickupModel.findOneAndUpdate(
             { "pickupData._id": pickupid }, // Filter criteria to find matching pickupData._id
-            { $set: { "status": status } }, // Update operation to set the status
+            { $set: updateOperations }, // Update operation to set the status and dates
             { new: true }
         );
 
-        if (!updatedempPickup || !updatedPickup ) {
+        if (!updatedPickup || !updatedempPickup) {
             throw new Error("Failed to update status");
         }
 
@@ -469,6 +526,7 @@ app.get('/sendstatus', async(req, res)=>{
         res.status(500).json({ success: false, message: "Failed to update status", error: error.message });
     }
 });
+
 
 
 app.get('/emppureq', async(req,res)=>{
@@ -591,6 +649,111 @@ app.get('/sendcouponstatus', async(req,res)=>{
         res.status(500).json({ success: false, message: "Failed to update state", error: error.message });
     }
 });
+// change section
+// app.get()
+app.get('/findempbyid', async(req,res)=>{
+    const data = req.query.data;
+    console.log('empid', data);
+    try
+    {
+        const findresult = await emppickupModel.find({ $and: [{ empId: data }, { status: 'Finished' }] });
+        
+        const count = await emppickupModel.countDocuments({ $and: [{ empId: data }, { status: 'Finished' }] });
+        //return res.send(findresult);
+       // res.status(200).json({ success: true, message: "State updated successfully", Result: findresult });
+       return res.json({ count: count, results: findresult });
+    }
+    catch(error)
+    {
+        console.error('Error finding emp result', error);
+        res.status(500).json({ success: false, message: "Failed to find emp", error: error.message });
+
+    }
+})
+
+
+app.get('/sortempbydate', async(req, res) => {
+    const data = req.query.data;
+    console.log('empid', data);
+    try {
+        const findresult = await emppickupModel.aggregate([
+            { $match: { $and: [{ empId: data }, { status: 'Finished' }] } },
+            { $sort: { finisheddate: -1 } }, // Sort by finisheddate in descending order
+            { $group: { _id: null, count: { $sum: 1 }, documents: { $push: "$$ROOT" } } } // Collect sorted documents
+        ]);
+
+        // Extract count from the aggregation result
+        const count = findresult.length > 0 ? findresult[0].count : 0;
+
+        // Extract sorted documents from the aggregation result
+        const sortedDocuments = findresult.length > 0 ? findresult[0].documents : [];
+
+        // Send response in JSON format
+        res.status(200).json({ count: count, documents: sortedDocuments });
+    } catch (error) {
+        console.error('Error finding emp result', error);
+        res.status(500).json({ success: false, message: "Failed to find emp", error: error.message });
+    }
+});
+app.get('/sortempbyweek', async(req, res) => {
+    const data = req.query.data;
+    console.log('empid', data);
+    try {
+        const findresult = await emppickupModel.aggregate([
+            {
+                $match: { $and: [{ empId: data }, { status: 'Finished' }, { finisheddate: { $ne: null } }, { finisheddate: { $ne: "" } }] }
+            },
+            {
+                $addFields: {
+                    // Split the finisheddate string into components
+                    dateComponents: {
+                        $split: ["$finisheddate", " "] // Split by space
+                    }
+                }
+            },
+            {
+                $addFields: {
+                    // Construct the date string without timezone information
+                    reconstructedDate: {
+                        $concat: ["$dateComponents[0]", " ", "$dateComponents[1]", " ", "$dateComponents[2]", " ", "$dateComponents[3]", " ", "$dateComponents[4]"]
+                    }
+                }
+            },
+            {
+                $addFields: {
+                    // Convert the reconstructed date string to a date object
+                    finishedDateObj: {
+                        $dateFromString: {
+                            dateString: "$reconstructedDate"
+                        }
+                    }
+                }
+            },
+            {
+                $addFields: {
+                    // Extract ISO week from the date
+                    week: { $isoWeek: "$finishedDateObj" }
+                }
+            },
+            { $sort: { week: -1 } }
+        ]);
+
+        const count = findresult.length > 0 ? findresult.length : 0;
+        res.status(200).json({ count: count, documents: findresult });
+    } catch (error) {
+        console.error('Error finding emp result', error);
+        res.status(500).json({ success: false, message: "Failed to find emp", error: error.message });
+    }
+});
+
+
+
+
+
+
+
+
+
 
 
 

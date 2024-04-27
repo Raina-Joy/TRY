@@ -13,6 +13,7 @@ export class RaisepickupComponent implements OnInit {
   public status:string ='Pending';
   public customuserid:string;
   public user:string;
+  public tdoayStr:string;
 
 
   constructor(private authservice:AuthService, private dataservice:DataService){}
@@ -21,6 +22,26 @@ export class RaisepickupComponent implements OnInit {
     
     //this.current_userid = this.authservice.getUserId();
     this.user = this.authservice.getUser();
+    const today = new Date();
+
+    // Set the timezone to Indian Standard Time (IST)
+    const options = {
+      timeZone: 'Asia/Kolkata',
+      hour12: true
+    };
+
+    // Format the date and time into Indian Standard Time (IST) in 12-hour format
+    const formattedISTDate = today.toLocaleString('en-IN', options);
+
+    console.log("Indian Standard Time (IST) in 12-hour format:", formattedISTDate);
+
+
+
+
+    this.tdoayStr = formattedISTDate;
+    //console.log(this.tdoayStr)
+
+
 
     this.customuserid = this.authservice.getCustomuserid();
     // this.dataservice.getPickupsByCuid(this.customuserid).subscribe(res=>{
@@ -48,7 +69,7 @@ pickUpSubmit()
 {
   
   
-  this.dataservice.addPickup(this.customuserid, this.user, this.pickupform.value.address, this.pickupform.value.pincode, this.pickupform.value.phno, this.pickupform.value.email,this.pickupform.value.date, this.pickupform.get('time')?.value, this.pickupform.get('category')?.value, this.status).subscribe(res=>{
+  this.dataservice.addPickup(this.customuserid, this.user, this.pickupform.value.address, this.pickupform.value.pincode, this.pickupform.value.phno, this.pickupform.value.email,this.pickupform.value.date, this.pickupform.get('time')?.value, this.pickupform.get('category')?.value, this.status, this.tdoayStr).subscribe(res=>{
     console.log(res);
     if(res.status === 201)
       {

@@ -22,6 +22,7 @@ export class PunotificationComponent implements OnInit {
   constructor(private http:HttpClient, private dataservice:DataService, private authservice:AuthService){}
   ngOnInit(): void {
     this.current_userId = this.authservice.getUserId();
+    this.myReq();
     
     
   }
@@ -50,6 +51,9 @@ export class PunotificationComponent implements OnInit {
     console.log("Category", this.category)
 
 
+  }
+  isRowDisabled(status: string): boolean {
+    return status === 'Finished';
   }
   confirmStatus() {
     this.status = 'Confirmed';

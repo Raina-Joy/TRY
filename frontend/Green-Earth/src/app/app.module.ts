@@ -30,6 +30,8 @@ import { PuhistoryComponent } from './USER/puhistory/puhistory.component';
 import { RewardsComponent } from './USER/rewards/rewards.component';
 import { PickupreqComponent } from './admin/pickupreq/pickupreq.component';
 import { PunotificationComponent } from './EMP/punotification/punotification.component';
+import { EmppickuphistoryComponent } from './EMP/emppickuphistory/emppickuphistory.component';
+import { EarningsComponent } from './EMP/earnings/earnings.component';
 
 @NgModule({
   declarations: [
@@ -56,6 +58,8 @@ import { PunotificationComponent } from './EMP/punotification/punotification.com
     RewardsComponent,
     PickupreqComponent,
     PunotificationComponent,
+    EmppickuphistoryComponent,
+    EarningsComponent,
    
     
   ],

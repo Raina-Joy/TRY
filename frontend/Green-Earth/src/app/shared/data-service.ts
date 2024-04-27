@@ -18,7 +18,7 @@ export class DataService
     private apiUrl = 'http://localhost:3000';
 
     constructor(private http:HttpClient, private router:Router ){}
-    addPickup(cuid: string, name: string, address: string, pincode: number, phno: number, email: string, date: string, time: string, category: string, status: string): Observable<any> {
+    addPickup(cuid: string, name: string, address: string, pincode: number, phno: number, email: string, date: string, time: string, category: string, status: string, notifdate:string): Observable<any> {
       // Check if a pickup exists with the provided cuid
       return this.getPickupsByCuid(cuid).pipe(
         switchMap((pickups: any[]) => {
@@ -36,7 +36,7 @@ export class DataService
               // Proceed with adding the new pickup
             console.log("test3")
 
-              const pickupData: PickupDataModal = {cuid:cuid, name:name, address:address,pincode:pincode,phno:phno, email:email,date:date,time:time, category:category, status:status};
+              const pickupData: PickupDataModal = {cuid:cuid, name:name, address:address,pincode:pincode,phno:phno, email:email,date:date,time:time, category:category, status:status, notifdate:notifdate};
               return this.http.post('http://localhost:3000/addpickup',pickupData)
 
             }
@@ -44,7 +44,7 @@ export class DataService
             console.log("test4")
 
             // No pickup exists for the provided cuid, add the new pickup
-            const pickupData: PickupDataModal = {cuid:cuid, name:name, address:address,pincode:pincode,phno:phno, email:email,date:date,time:time, category:category, status:status};
+            const pickupData: PickupDataModal = {cuid:cuid, name:name, address:address,pincode:pincode,phno:phno, email:email,date:date,time:time, category:category, status:status, notifdate:notifdate};
             console.log(pickupData);
             return this.http.post('http://localhost:3000/addpickup',pickupData)
           }
@@ -65,6 +65,12 @@ export class DataService
         return this.http.get<any[]>(urlWithParams);
       // const url = `${this.apiUrl}/findpickupbyid?data=${cuid}`; // Send cuid as a query parameter named data
       // return this.http.get<any[]>(url);
+    }
+
+    getSortedEmpbydate(cuid: string): Observable<any> {
+      const apiUrl = 'http://localhost:3000/sortempbydate';
+      const urlWithParams = `${apiUrl}?data=${cuid}`;
+      return this.http.get<any>(urlWithParams);
     }
     
   
@@ -171,5 +177,11 @@ export class DataService
         const urlWithParams = `${apiUrl}?state=${couponState}&userid=${userid}`;
         return this.http.get(urlWithParams);
 
+    }
+    findEmpbyIdandStatus(empid:string)
+    {
+      const apiUrl = 'http://localhost:3000/findempbyid';
+        const urlWithParams = `${apiUrl}?data=${empid}`;
+        return this.http.get(urlWithParams);
     }
     }

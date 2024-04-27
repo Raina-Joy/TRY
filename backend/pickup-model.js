@@ -9,7 +9,8 @@ const PickUpTableSchema = mongoose.Schema({
     date:{type:String},
     time:{type:String},
     category:{type:String},
-    status:{type: String}
+    status:{type: String},
+    notifdate:{type: String}
 })
 
 
