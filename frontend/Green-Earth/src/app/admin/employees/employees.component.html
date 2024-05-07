@@ -12,8 +12,37 @@
       data-bs-whatever="@mdo" (click)="addEmpRoutes()">
         Add Employee routes
       </button>
+      <div class="col-lg-12 p-lg-5 ">
+        <table class="table" *ngIf="show2">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Slno</th>
+              <th scope="col">Name</th>
+              <th scope="col">Pincode</th>
+              <th scope="col">Collection Pins</th>
+            
+  
+              
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of responseData1; let i = index" (click)="onRowClick(row)">
+              <td>{{ i +1 }}</td>
+              <td>{{ row.empname }}</td>
+              <td>{{ row.emppin }}</td>
+              <td>
+                <ul>
+                  <li *ngFor="let pin of getCollectionPins(row.collectionpins)">{{ pin }}</li>
+                </ul>
+              </td>
+                
+            </tr>
+  
+  
+          </tbody>
+        </table>
       <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-  aria-hidden="true">
+  aria-hidden="true" (hidden)="clearForm()">
   <div class="modal-dialog modal-dialog-scrollable modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -22,15 +51,22 @@
       </div>
       <div class="modal-body ">
         <form [formGroup]="routeForm">
-          <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">Employee Name:</label>
-            <select class="form-select" formControlName="selectedEmp">
-              <option *ngFor="let item of responseData" [value]="item.name">{{ item.name }}</option>
-            </select>
+          <label for="recipient-name" class="col-form-label">Employee Name:</label>
+          <select class="form-select" formControlName="selectedEmp" (change)="updateSelection()">
+            <option *ngFor="let item of responseData" [value]="item.name">{{ item.name }}</option>
+          </select>
+          
+          <!-- <label for="recipient-name" class="col-form-label">Employee Id:</label>
+          <input type="text" class="form-control" [value]="selectedId" visually-hidden >
+          
+          <label for="recipient-name" class="col-form-label">Employee pincode:</label>      
+          <input type="text" class="form-control" [value]="selectedPincode"> -->
+          
+ 
             
             <!-- <p>The selected item is : {{routeForm.value.selectedOption}}</p> -->
             
-          </div>
+         
           <div class="mb-3">
             <label for="recipient-name" class="col-form-label">Postoffice 1:</label>
             <select class="form-select" formControlName="selectedPost1">
@@ -47,30 +83,7 @@
               <option *ngFor="let item of allpost " [value]="item.pincode">{{ item.postoffice}}</option>
             </select>
           </div>
-          <!-- <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">Empid:</label>
-            <input class="form-control" type="text" name="empid" id="empid" formControlName="empid">
-          </div>
-          <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">Title:</label>
-            <input class="form-control" type="text" name="title" id="title" formControlName="title">
-          </div>
-          <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">Description:</label>
-            <input class="form-control" type="text" name="desc" id="desc" formControlName="desc">
-          </div>
-          <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">Code:</label>
-            <input class="form-control" type="text" name="code" id="code" formControlName="code">
-          </div>
-          <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">DOC:</label>
-            <input class="form-control" type="date" name="doc" id="doc" formControlName="doc">
-          </div>
-          <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">DOE:</label>
-            <input class="form-control" type="date" name="doe" id="doe" formControlName="doe">
-          </div>        -->
+          
         </form>
       </div>
       <div class="modal-footer">
@@ -94,14 +107,14 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let row of responseData">
+          <tr *ngFor="let row of responseData" (click)="onRowClick(row)">
             <td>{{ row._id }}</td>
             <td>{{ row.name }}</td>
             <td>{{ row.address }}</td>
             <td>{{ row.pincode }}</td>
             <td>{{ row.phno }}</td>
 
-            <td><button class="btn btn-danger ">Delete</button></td>
+            <td><button class="btn btn-danger" (click)="onRowClick(row);removeEmp()">Delete</button></td>
 
           </tr>
 
@@ -116,6 +129,7 @@
       <table class="table" *ngIf="show">
         <thead class="thead-dark">
           <tr>
+            <th scope="col">Id</th>
             <th scope="col">Name</th>
             <th scope="col">Pincode</th>
             <th scope="col">Collection Pins</th>
@@ -125,7 +139,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let row of responseData1">
+          <tr *ngFor="let row of responseData1" (click)="onRowClick(row)">
+            <td>{{ row.empid }}</td>
             <td>{{ row.empname }}</td>
             <td>{{ row.emppin }}</td>
             <td>
@@ -133,13 +148,66 @@
                 <li *ngFor="let pin of getCollectionPins(row.collectionpins)">{{ pin }}</li>
               </ul>
             </td>
-            <td><button class="btn btn-danger me-2">Delete</button><button class="btn btn-danger me-2">Edit</button></td>
+            <td><button class="btn btn-danger me-2" (click)="onRowClick(row);removeRoute();">Delete</button><button class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#editModal"
+              data-bs-whatever="@mdo" (click)="onRowClick(row); updateEmpRoutes()">Edit</button></td>
 
           </tr>
 
 
         </tbody>
       </table>
+      <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+  aria-hidden="true" (hidden)="clearForm()">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Routes</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body ">
+        <form [formGroup]="routeForm1">
+          <label for="recipient-name" class="col-form-label">Employee Name:</label>
+          <select class="form-select" formControlName="selectedEmp1">
+            <option [value]="empname">{{ empname }}</option>
+          </select>
+          
+          <!-- <label for="recipient-name" class="col-form-label">Employee Id:</label>
+          <input type="text" class="form-control" [value]="selectedId" visually-hidden >
+          
+          <label for="recipient-name" class="col-form-label">Employee pincode:</label>      
+          <input type="text" class="form-control" [value]="selectedPincode"> -->
+          
+ 
+            
+            <!-- <p>The selected item is : {{routeForm.value.selectedOption}}</p> -->
+            
+         
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">Postoffice 1:</label>
+            <select class="form-select" formControlName="selectedPost11">
+              <option *ngFor="let item of allpost " [value]="item.pincode">{{ item.postoffice}}</option>
+            </select>
+            
+            
+            <label for="recipient-name" class="col-form-label">Postoffice 2:</label>
+            <select class="form-select" formControlName="selectedPost22">
+              <option *ngFor="let item of allpost " [value]="item.pincode">{{ item.postoffice}}</option>
+            </select>
+            <label for="recipient-name" class="col-form-label">Postoffice 3:</label>
+            <select class="form-select" formControlName="selectedPost33">
+              <option *ngFor="let item of allpost " [value]="item.pincode">{{ item.postoffice}}</option>
+            </select>
+          </div>
+          
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" (click)="onUpdate()">Update</button>
+      </div>
+    </div>
+  </div>
+
     </div>
   </div>
 </div>

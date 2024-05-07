@@ -17,6 +17,9 @@ const couponModel = require('./coupon-model');
 const usercouponModel = require('./usercouponmodel ');
 const pincodeModel = require('./pinmodel');
 const pinmodel = require('./pinmodel');
+const empmodel = require('./empmodel');
+const { ObjectId } = require('mongodb');
+const routeModel = require('./route-model');
 mongoose.connect('mongodb://localhost:27017/gedb').then(()=>{console.log('Connected to DB')}).catch(()=>{console.log('Error connecting to DB')})
 
 app.use(bodyParser.json());
@@ -315,32 +318,7 @@ app.get('/allpickupreq',async(req,res)=>{
     res.send(allpickupreq)
 })
 
-// app.post('/assignpickup',(req,res)=>{
-//     const pickuptable = new pickupTable(
-//         {
-//             empid:req.body.empid,
-//             empname: req.body.empname,
-//             pickupid:req.body.pickupid,
-//             assigndate:req.body.assigndate,
-//             status:req.body.status
-//         })
-//         pickuptable.save().then(result=>{
-//             return res.status(201).json({
-//                 message:'Data entered',
-//                 status: 201
-//             })
-//         })
-//         .catch(err=>{
-            
-//                 return res.status(401).json({
-//                     message:'Data add failed',
-//                     error:err,
-//                     status:401
-            
-//         })
-        
-// })
-// })
+
 app.post('/addroute',(req,res)=>{
     const emproutemodel = new emprouteModel({
         empid:req.body.empid,
@@ -443,56 +421,7 @@ app.post('/emppudata',(req,res)=>{
 })
 })
 
-// async function updatePickupStatus(pickupId, newStatus) {
-//     try {
-//         const updatedPickup = await PickupModel.findByIdAndUpdate(pickupId, { status: newStatus }, { new: true });
-//         // Now, find and update corresponding entry in EmpPickupModel
-//         const empPickup = await EmpPickupModel.findOneAndUpdate({ pickupData: updatedPickup._id }, { status: newStatus }, { new: true });
-//         return { updatedPickup, empPickup };
-//     } catch (error) {
-//         console.error('Error updating status:', error);
-//         throw error;
-//     }
-// }
-// app.get('/sendstatus', async(req, res)=>{
-//     const status = req.query.status;
-//     const pickupid = req.query.pickupid;
-//     console.log("received data", status, pickupid);
-//     try {
-       
-//         const updatedPickup = await pickupTable.findByIdAndUpdate(pickupid, { status: status }, { new: true });
-//         if(status === 'Finished')
-//         {
-//             const updatedfinishempPickup = await emppickupModel.findOneAndUpdate(
-//                 { "pickupData._id": pickupid }, // Filter criteria to find matching pickupData._id
-//                 { $set: { "status": status } },
-//                 { $set: { "pickupData.status": status } }, // Update operation to set the status
-//                 { $set: { "finisheddate": new Date() } },
-//                 { new: true }
-//             );
-//         }
-//         else
-//         {
-//             const updatedconfirmempPickup = await emppickupModel.findOneAndUpdate(
-//                 { "pickupData._id": pickupid }, // Filter criteria to find matching pickupData._id
-//                 { $set: { "status": status } },
-//                 { $set: { "pickupData.status": status } }, // Update operation to set the status
-//                 { $set: { "confirmdate": new Date() } },
-//                 { new: true }
-//             );
-//         }
-        
 
-//         if (!updatedconfirmempPickup || !updatedPickup || !updatedfinishempPickup ) {
-//             throw new Error("Failed to update status");
-//         }
-
-//         res.status(200).json({ success: true, message: "Status updated successfully" });
-//     } catch (error) {
-//         console.error('Error updating status:', error);
-//         res.status(500).json({ success: false, message: "Failed to update status", error: error.message });
-//     }
-// });
 
 app.get('/sendstatus', async(req, res) => {
     const status = req.query.status;
@@ -570,6 +499,14 @@ app.post('/addcoupon', (req,res)=>{
         
 })
 
+});
+
+app.get('/allcoupon', async(req,res)=>{
+    
+    const resdata = await couponModel.find();
+    console.log(resdata);
+    
+    return res.send(resdata)
 })
 
 app.get('/couponfind', async(req,res)=>{
@@ -745,6 +682,101 @@ app.get('/sortempbyweek', async(req, res) => {
         res.status(500).json({ success: false, message: "Failed to find emp", error: error.message });
     }
 });
+
+app.delete('/removeemp', async (req, res) => {
+    const data = req.query.data;
+  
+    try {
+      // Check if the provided ID is valid
+      if (!ObjectId.isValid(data)) {
+        return res.status(400).json({ message: 'Invalid ID format' });
+      }
+  
+      // Find the document by ID and delete it
+      const deletedDocument = await empmodel.findByIdAndDelete(data);
+  
+      // Check if the document was found and deleted
+      if (!deletedDocument) {
+        return res.status(404).json({ message: 'Document not found' });
+      }
+  
+      // Send a success response
+      res.status(200).json({ message: 'Document deleted successfully', status:true});
+    } catch (error) {
+      // Handle any errors
+      console.error('Error deleting document:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+  app.delete('/removeroute', async (req, res) => {
+    const data = req.query.data;
+  
+    try {
+      // Check if the provided ID is valid
+      if (!ObjectId.isValid(data)) {
+        return res.status(400).json({ message: 'Invalid ID format' });
+      }
+  
+      // Find the document by ID and delete it
+      const deletedDocument = await routeModel.findByIdAndDelete(data);
+  
+      // Check if the document was found and deleted
+      if (!deletedDocument) {
+        return res.status(404).json({ message: 'Document not found' });
+      }
+  
+      // Send a success response
+      res.status(200).json({ message: 'Document deleted successfully', status:true});
+    } catch (error) {
+      // Handle any errors
+      console.error('Error deleting document:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+
+  app.put('/updateroute', async (req, res) => {
+    try {
+        const  empid  = req.query.empid; // Extract empid from query parameters
+        const { pin1, pin2, pin3 } = req.body.collectionpins;
+        console.log(empid,pin1,pin2,pin3);
+        const findresult = await routeModel.findOneAndUpdate(  { empid: empid }, // Filter condition
+        { $set: { 'collectionpins.pin1': pin1, 'collectionpins.pin2': pin2, 'collectionpins.pin3': pin3 } }, // Update fields
+        { new: true});
+        console.log("updatedresult",findresult);
+        
+
+        res.status(200).json({ message: 'Collection updated successfully', data: updatedCollection });
+    } catch (error) {
+        console.error('Error updating collection:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+app.delete('/removecoupon', async (req, res) => {
+    const data = req.query.data;
+  
+    try {
+      // Check if the provided ID is valid
+      if (!ObjectId.isValid(data)) {
+        return res.status(400).json({ message: 'Invalid ID format' });
+      }
+  
+      // Find the document by ID and delete it
+      const deletedDocument = await couponModel.findByIdAndDelete(data);
+  
+      // Check if the document was found and deleted
+      if (!deletedDocument) {
+        return res.status(404).json({ message: 'Document not found' });
+      }
+  
+      // Send a success response
+      res.status(200).json({ message: 'Document deleted successfully', status:true});
+    } catch (error) {
+      // Handle any errors
+      console.error('Error deleting document:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+
 
 
 

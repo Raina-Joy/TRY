@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { PickupDataModal } from "./data-pickupmodel";
+import { RouteModal } from "./route-model";
 import { catchError, switchMap } from 'rxjs/operators'; 
 import { EmpPickupDataModal } from "./emppudatamodel";
 import { CouponDataModal } from "./coupondatamodel";
@@ -73,20 +74,7 @@ export class DataService
       return this.http.get<any>(urlWithParams);
     }
     
-  
-    // addPickup( cuid:string, name:string, address:string,pincode:number,phno:number, email:string,date:string,time:string, category:string, status:string)
-    // {
-        
-    //     const pickupdata: PickupDataModal = {cuid:cuid, name:name, address:address,pincode:pincode,phno:phno, email:email,date:date,time:time, category:category, status:status};
-    //     console.log(pickupdata);
-    //     this.http.post('http://localhost:3000/addpickup',pickupdata).subscribe(res=>
-    //     {
-    //         alert("Successfully Scheduled");
-    //         this.router.navigate(['puhistory']);
-
-    //     })      
-    // }
-    
+ 
     
     findAllpickupreq(): Observable<any[]> 
     {
@@ -164,13 +152,7 @@ export class DataService
        return this.http.get(urlWithParams);
         
      }
-    //  fetchUserCouponState(pickupid:string)
-    //  {
-    //     const apiUrl = 'http://localhost:3000/couponstate';
-    //     const urlWithParams = `${apiUrl}?data=${pickupid}`;
-    //    return this.http.get(urlWithParams);
-        
-    //  }
+
     updateCouponState(couponState:string,userid:string)
     {
       const apiUrl = 'http://localhost:3000/sendcouponstatus';
@@ -183,5 +165,53 @@ export class DataService
       const apiUrl = 'http://localhost:3000/findempbyid';
         const urlWithParams = `${apiUrl}?data=${empid}`;
         return this.http.get(urlWithParams);
+    }
+    addRoute(empid:string, empname:string, emppin:number, collectionpins: {
+          pin1:number,
+          pin2:number,
+          pin3:number} )
+    {
+      const routedata: RouteModal = {empid:empid, empname:empname, emppin:emppin, collectionpins: {
+        pin1: collectionpins.pin1,
+        pin2: collectionpins.pin2,
+        pin3: collectionpins.pin3
+      }};
+      console.log(routedata);
+      return this.http.post('http://localhost:3000/addroute',routedata)     
+    }
+    removeEmp(empid:string)
+    {
+      const apiUrl = 'http://localhost:3000/removeemp';
+      const urlWithParams = `${apiUrl}?data=${empid}`;
+      return this.http.delete(urlWithParams);
+    }
+    removeRoute(empid:string)
+    {
+      const apiUrl = 'http://localhost:3000/removeroute';
+      const urlWithParams = `${apiUrl}?data=${empid}`;
+      return this.http.delete(urlWithParams);
+    }
+    updateRoute(empid:string,collectionpins: {
+      pin1:number,
+      pin2:number,
+      pin3:number})
+    {
+     //console.log('From service:',empid,collectionpins.pin1,collectionpins.pin2,collectionpins.pin3)
+      const apiUrl = 'http://localhost:3000/updateroute';
+      const urlWithParams = `${apiUrl}?empid=${empid}`;
+
+      return this.http.put(urlWithParams, { collectionpins });
+     
+
+    }
+    allCoupons()
+    {
+      return this.http.get('http://localhost:3000/allcoupon');
+    }
+    removeCoupon(couponid:string)
+    {
+      const apiUrl = 'http://localhost:3000/removecoupon';
+      const urlWithParams = `${apiUrl}?data=${couponid}`;
+      return this.http.delete(urlWithParams);
     }
     }
