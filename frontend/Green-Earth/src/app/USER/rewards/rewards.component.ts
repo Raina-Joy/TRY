@@ -68,6 +68,7 @@ export class RewardsComponent implements OnInit {
    });
     this.showCouponCode = true;
     
+    
     // Hide unselected coupons by setting their visibility to false
     this.couponVisibility = this.couponVisibility.map((visibility, i) => i === index);
    this.buttonText = this.selectedCoupons ? "Redeem" : "Choose";

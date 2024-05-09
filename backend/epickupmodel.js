@@ -8,8 +8,8 @@ const EmpPickUpSchema = mongoose.Schema({
     pickupData:{type: Object},
     assigndate:{type:String},
     status:{type:String}, 
-    finisheddate:{type:String},
-    confirmdate:{type:String}
+    finisheddate:{type:Date},
+    confirmdate:{type:Date}
 
 })
 module.exports=mongoose.model('EmpPickupModel',EmpPickUpSchema)

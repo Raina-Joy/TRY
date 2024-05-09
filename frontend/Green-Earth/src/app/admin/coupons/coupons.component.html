@@ -2,53 +2,14 @@
   <div class="row">
     <div class="col-lg-12">
       <!-- Button trigger modal -->
-      <button type="button" class="btn btn-primary me-5" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Add coupons</button>
+      <button type="button" class="btn btn-primary me-5" data-bs-toggle="modal" data-bs-target="#exampleModal"
+        data-bs-whatever="@mdo">Add coupons</button>
       <button type="button" class="btn btn-primary" (click)="showCoupons()">Show coupons</button>
-      
+
     </div>
-    </div>
-    </div>
-    <div class="col-lg-12 p-lg-2 ">
-      <table class="table" *ngIf="show">
-        <thead class="thead-dark">
-          <tr>
-            <th scope="col">Slno</th>
-            <th scope="col">Category</th>
-            <th scope="col">Brand Name</th>
-            <th scope="col">Title</th>
-            <th scope="col">Description</th>
-            <th scope="col">Code</th>
-            <th scope="col">Creation date</th>
-            <th scope="col">Expiry date</th>
-            <th scope="col">Action</th>
-
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let row of responsedata; let i = index" (click)="onRowClick(row)">
-            <td>{{ i +1 }}</td>
-            <td>{{ row.category }}</td>
-            <td>{{ row.brandname }}</td>
-            <td>{{ row.title }}</td>
-            <td>{{ row.desc }}</td>
-            <td>{{ row.code }}</td>
-            <td>{{  row.doc | date }}</td>
-            <td>{{ row.doe | date }}</td>
-            <td><button class="btn btn-danger me-2" (click)="onRowClick(row);removeCoupon();">Delete</button><button class="btn btn-danger mt-1">Edit</button></td>
-            
-           
-              
-          </tr>
-
-
-        </tbody>
-      </table>
-  
-
-
-
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-  aria-hidden="true">
+  </div>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -87,7 +48,7 @@
           <div class="mb-3">
             <label for="recipient-name" class="col-form-label">DOE:</label>
             <input class="form-control" type="date" name="doe" id="doe" formControlName="doe">
-          </div>       
+          </div>
         </form>
       </div>
       <div class="modal-footer">
@@ -97,3 +58,88 @@
     </div>
   </div>
 </div>
+<div class="col-lg-12 p-lg-2 ">
+  <table class="table" *ngIf="show">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Slno</th>
+        <th scope="col">Category</th>
+        <th scope="col">Brand Name</th>
+        <th scope="col">Title</th>
+        <th scope="col">Description</th>
+        <th scope="col">Code</th>
+        <th scope="col">Creation date</th>
+        <th scope="col">Expiry date</th>
+        <th scope="col">Action</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of responsedata; let i = index" (click)="onRowClick(row)">
+        <td>{{ i +1 }}</td>
+        <td>{{ row.category }}</td>
+        <td>{{ row.brandname }}</td>
+        <td>{{ row.title }}</td>
+        <td>{{ row.desc }}</td>
+        <td>{{ row.code }}</td>
+        <td>{{ row.doc | date }}</td>
+        <td>{{ row.doe | date }}</td>
+        <td><button class="btn btn-danger me-2" (click)="onRowClick(row);removeCoupon();">Delete</button><button
+            class="btn btn-danger mt-1" data-bs-toggle="modal" data-bs-target="#editModal" data-bs-whatever="@mdo"
+            (click)="onRowClick(row);">Edit</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+  aria-hidden="true" (hidden)="clearForm()">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Coupons</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body ">
+        <form [formGroup]="couponForm1">
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">Category:</label>
+            <select class="form-select" formControlName="selectedOption1">
+              <option [value]="selectedcat">{{ selectedcat }}</option>
+            </select>
+          </div>
+            <!-- <p>The selected item is : {{couponForm.value.selectedOption}}</p> -->
+          
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">Brand Name:</label>
+            <input class="form-control" type="text" name="brandname1" id="brandname" formControlName="brandname1" [value]="selectedbname">
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">Title:</label>
+            <input class="form-control" type="text" name="title1" id="title" formControlName="title1" [value]="selectedtitle">
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">Description:</label>
+            <input class="form-control" type="text" name="desc1" id="desc" formControlName="desc1" [value]="selecteddesc">
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">Code:</label>
+            <input class="form-control" type="text" name="code1" id="code1" formControlName="code1" [value]="selectedcode">
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">DOC:</label>
+            <input class="form-control" type="text" name="doc1" id="doc" formControlName="doc1" [value]="selectedoc | date">
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">DOE:</label>
+            <input class="form-control" type="text" name="doe1" id="doe" formControlName="doe1" [value]="selecteddoe | date">
+          </div> 
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" (click)="onUpdate()">Update</button>
+      </div>
+    </div>
+  </div>
+  </div>
+  

@@ -61,6 +61,7 @@ export class PunotificationComponent implements OnInit {
       response => {
         // Handle success response
         console.log("Status confirmed successfully");
+        this.myReq();
         // Optionally, you can update responseData or perform any other action here
       },
       error => {
@@ -68,6 +69,7 @@ export class PunotificationComponent implements OnInit {
         console.error("Error confirming status:", error);
       }
     );
+
   }
 
   sendReward()
@@ -77,6 +79,7 @@ export class PunotificationComponent implements OnInit {
       response => {
         // Handle success response
         console.log("Status confirmed successfully");
+        this.myReq();
         // Optionally, you can update responseData or perform any other action here
       },
       error => {

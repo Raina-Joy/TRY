@@ -590,15 +590,15 @@ app.get('/sendcouponstatus', async(req,res)=>{
 // app.get()
 app.get('/findempbyid', async(req,res)=>{
     const data = req.query.data;
-    console.log('empid', data);
+    
     try
     {
-        const findresult = await emppickupModel.find({ $and: [{ empId: data }, { status: 'Finished' }] });
+        const findresult = await emppickupModel.find({ empId: data });
         
         const count = await emppickupModel.countDocuments({ $and: [{ empId: data }, { status: 'Finished' }] });
         //return res.send(findresult);
        // res.status(200).json({ success: true, message: "State updated successfully", Result: findresult });
-       return res.json({ count: count, results: findresult });
+       return res.json({ count:count, results: findresult });
     }
     catch(error)
     {
@@ -607,6 +607,39 @@ app.get('/findempbyid', async(req,res)=>{
 
     }
 })
+app.get('/findsal', async (req, res) => {
+    const empid = req.query.data;
+    const from = new Date(req.query.from);
+    const to = new Date(req.query.to);
+  
+    // Set the time component to the end of the day for both from and to dates
+    from.setHours(23, 59, 59, 999); // Set time to 23:59:59:999
+    to.setHours(23, 59, 59, 999);   // Set time to 23:59:59:999
+  
+    console.log('empid', empid, 'from and to', from, to);
+  
+    try {
+      const findresult = await emppickupModel.find({
+        empId: empid,
+        finisheddate: { $gte: from, $lte: to }
+      });
+  
+      const count = await emppickupModel.countDocuments({
+        empId: empid,
+        status: 'Finished',
+        finisheddate: { $gte: from, $lte: to }
+      });
+  
+      return res.json({ count: count, results: findresult });
+    } catch (error) {
+      console.error('Error finding emp result', error);
+      return res.status(500).json({ success: false, message: "Failed to find emp", error: error.message });
+    }
+  });
+  
+  
+  
+
 
 
 app.get('/sortempbydate', async(req, res) => {
@@ -778,9 +811,32 @@ app.delete('/removecoupon', async (req, res) => {
   });
 
 
+  app.put('/updatecoupon', async (req, res) => {
+    const couponid = req.query.couponid;
+    const coupondata = {
+        category: req.body.category,
+        brandname: req.body.brandname,
+        title: req.body.title,
+        desc: req.body.desc,
+        code: req.body.code,
+        doc: req.body.doc,
+        doe: req.body.doe,
+    };
+console.log('id', couponid, 'data', coupondata);
+    try {
+        const findresult = await couponModel.findByIdAndUpdate({_id:couponid}, coupondata, { new: true });
 
+        if (!findresult) {
+            return res.status(404).send('Coupon not found');
+        }
 
-
+        console.log('Updated coupon:', findresult);
+        res.status(200).json(findresult); // Optionally, you can send back the updated document
+    } catch (error) {
+        console.error('Error updating coupon:', error);
+        res.status(500).send('Internal server error');
+    }
+});
 
 
 

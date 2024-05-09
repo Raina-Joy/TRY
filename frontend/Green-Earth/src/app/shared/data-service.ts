@@ -214,4 +214,23 @@ export class DataService
       const urlWithParams = `${apiUrl}?data=${couponid}`;
       return this.http.delete(urlWithParams);
     }
+
+    updateCoupon(couponid:string, category:string, brandname:string, title:string,code:string,desc:string, doc:Date, doe:Date)
+     {
+        const coupondata: CouponDataModal = {category:category, brandname:brandname, title:title, desc:desc, code:code, doc:doc, doe:doe}
+        console.log('coupondata',coupondata, 'id', couponid);
+        const apiUrl = 'http://localhost:3000/updatecoupon';
+        const urlWithParams = `${apiUrl}?couponid=${couponid}`;
+        this.http.put(urlWithParams, coupondata).subscribe(res=>{
+            console.log(res);
+        })
+
+     }
+     genempSal(empid: string, from: Date, to: Date) {
+      console.log('from service', empid, from, to);
+      const apiUrl = 'http://localhost:3000/findsal';
+      const urlWithParams = `${apiUrl}?data=${empid}&from=${from}&to=${to}`;
+      return this.http.get(urlWithParams);
+    }
+    
     }

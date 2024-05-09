@@ -102,6 +102,7 @@ export class PickupreqComponent implements OnInit {
       response => {
         // Handle success response
         console.log("Status assigned successfully");
+        this.findAllpickup();
         // Optionally, you can update responseData or perform any other action here
       },
       error => {

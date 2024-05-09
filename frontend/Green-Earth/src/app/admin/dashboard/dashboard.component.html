@@ -1,1 +1,34 @@
-<p>dashboard works!</p>
+<div class="container mt-4 p-5">
+    <div class="row">
+        <div class="col-12 p-2 mb-3 text-center bg-success-subtle"><h2>Employee salary</h2></div>
+        <!-- <div class="col-12 p-2 mb-3 text-center">
+            <button class="btn btn-outline-success me-5" (click)="byDate()">Day</button>
+            <button class="btn btn-outline-success me-5">Week</button>
+            <button class="btn btn-outline-success me-5">Month</button>
+            <button class="btn btn-outline-success">Year</button>
+
+
+
+        </div> -->
+        <form [formGroup]="salForm">
+            From: <input type="date" class="form-control" formControlName="from">
+            To: <input type="date" class="form-control" formControlName="to">
+            <label for="">Select employee</label>
+            <select name="" id="" class="form-select" formControlName="selectedemp">
+              <option *ngFor="let employee of resdata" [value]="employee._id">{{ employee.name }}</option>
+            </select>
+            <label for="">Enter the amount / collection</label>
+            <input type="number" class="form-control" formControlName="amt">
+            <div class="d-flex justify-content-center mt-3">
+              <button class="btn btn-info" (click)="generateSal()">Generate</button>
+            </div>
+          </form>
+          
+        <div class="col-10 p-3">
+            <p>Total Count: {{ count }}</p>
+            
+          </div>
+          
+
+    </div>
+</div>
