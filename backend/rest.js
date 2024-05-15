@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const nodemailer = require('nodemailer');
 const signupempModel = require('./empmodel')
 const signupModel = require('./model');
 const route = express.Router();
@@ -10,18 +11,18 @@ const app = express();
 const jwt = require('jsonwebtoken');
 const adminmodel = require('./adminmodel');
 const pickupTable = require("./pickup-model")
-const assignedpickupTable = require('./assigned-pickup-model')
+//const assignedpickupTable = require('./assigned-pickup-model')
 const emprouteModel = require('./route-model');
 const emppickupModel = require("./epickupmodel");
 const couponModel = require('./coupon-model');
 const usercouponModel = require('./usercouponmodel ');
-const pincodeModel = require('./pinmodel');
+//const pincodeModel = require('./pinmodel');
 const pinmodel = require('./pinmodel');
 const empmodel = require('./empmodel');
 const { ObjectId } = require('mongodb');
 const routeModel = require('./route-model');
+const stripe = require('stripe')('sk_test_51OF91dSJWknz1DNyHibISQFY1WP4yZPUCZxc5fhFrAboOHXWGJXEwLEOy8aDMpBTcJsgDfzoUuX5AH2ICc3C2L2L0047lIgmXB');
 mongoose.connect('mongodb://localhost:27017/gedb').then(()=>{console.log('Connected to DB')}).catch(()=>{console.log('Error connecting to DB')})
-
 app.use(bodyParser.json());
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -29,6 +30,56 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     next();
 })
+app.use(cors());
+app.post('/send-email', async (req, res) => {
+    const { to, subject, text } = req.body;
+  
+    // Create a transporter object using SMTP transport
+    let transporter = nodemailer.createTransport({
+        port: 465,
+        host: 'smtp.gmail.com',
+        auth: {
+            user: 'rainajoy2016',
+            pass: 'zoyd sgob sxms bgrl',
+        },
+        secure: true,
+    });
+    let info = await transporter.sendMail({
+        from: 'rainajoy2016@gmail.com',
+        to: to,
+        subject: subject,
+        text: text
+      });
+    
+      console.log('Message sent: %s', info.messageId);
+      res.json({ success: true, message: 'Email sent successfully' });
+    });
+    
+    
+
+app.post('/charge', async (req, res) => {
+    try {
+     
+      const { amount, stripeToken } = req.body;
+      console.log('Amt and token.....',amount,stripeToken);
+
+  
+      // Create a charge using the token
+      const charge = await stripe.charges.create({
+        amount: amount, // amount in cents
+        currency: 'inr',
+        description: 'Salary',
+        source: stripeToken,
+      });
+  
+      // Send a response indicating that the charge was successful
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ success: false, message: error.message });
+    }
+  });
+  
 app.get('/allu',async(req,res)=>{
     const alluser = await signupModel.find();
     console.log(alluser);
@@ -95,7 +146,10 @@ app.post('/login', (req, res) => {
 
             if (!result) {
                 incorrectPassword = true;
-                return;
+                return res.status(401).json({
+                    'message': 'Password is incorrect',
+                    status: 402
+                });
             }
 
             const token = jwt.sign({ name: userFound.name, userId: userFound._id}, "secret_string", { expiresIn: "1h" });
@@ -157,22 +211,30 @@ app.post('/signupemp', (req,res)=>{
 
         app.post('/loginemp', (req, res) => {
             let userFound;
+            let userNotFound = false;
+            let incorrectPassword = false;
         
             signupempModel.findOne({ name: req.body.name })
                 .then(user => {
                     if (!user) {
-                        return res.status(401).json({
-                            'message': 'User not found'
-                        });
+                        userNotFound = true;
+                        return;
                     }
                     userFound = user;
                     
                     return bcrypt.compare(req.body.password, user.password);
                 })
                 .then(result => {
+                    if (userNotFound)
+                        {
+                            return res.status(401).json({
+                                'message': 'User not found', 
+                                 status:402
+                            });
+                        }
                     if (!result) {
                         return res.status(401).json({
-                            message: 'Password is incorrect'
+                            message: 'Password is incorrect', status:402
                         });
                     }
         
@@ -637,84 +699,6 @@ app.get('/findsal', async (req, res) => {
     }
   });
   
-  
-  
-
-
-
-app.get('/sortempbydate', async(req, res) => {
-    const data = req.query.data;
-    console.log('empid', data);
-    try {
-        const findresult = await emppickupModel.aggregate([
-            { $match: { $and: [{ empId: data }, { status: 'Finished' }] } },
-            { $sort: { finisheddate: -1 } }, // Sort by finisheddate in descending order
-            { $group: { _id: null, count: { $sum: 1 }, documents: { $push: "$$ROOT" } } } // Collect sorted documents
-        ]);
-
-        // Extract count from the aggregation result
-        const count = findresult.length > 0 ? findresult[0].count : 0;
-
-        // Extract sorted documents from the aggregation result
-        const sortedDocuments = findresult.length > 0 ? findresult[0].documents : [];
-
-        // Send response in JSON format
-        res.status(200).json({ count: count, documents: sortedDocuments });
-    } catch (error) {
-        console.error('Error finding emp result', error);
-        res.status(500).json({ success: false, message: "Failed to find emp", error: error.message });
-    }
-});
-app.get('/sortempbyweek', async(req, res) => {
-    const data = req.query.data;
-    console.log('empid', data);
-    try {
-        const findresult = await emppickupModel.aggregate([
-            {
-                $match: { $and: [{ empId: data }, { status: 'Finished' }, { finisheddate: { $ne: null } }, { finisheddate: { $ne: "" } }] }
-            },
-            {
-                $addFields: {
-                    // Split the finisheddate string into components
-                    dateComponents: {
-                        $split: ["$finisheddate", " "] // Split by space
-                    }
-                }
-            },
-            {
-                $addFields: {
-                    // Construct the date string without timezone information
-                    reconstructedDate: {
-                        $concat: ["$dateComponents[0]", " ", "$dateComponents[1]", " ", "$dateComponents[2]", " ", "$dateComponents[3]", " ", "$dateComponents[4]"]
-                    }
-                }
-            },
-            {
-                $addFields: {
-                    // Convert the reconstructed date string to a date object
-                    finishedDateObj: {
-                        $dateFromString: {
-                            dateString: "$reconstructedDate"
-                        }
-                    }
-                }
-            },
-            {
-                $addFields: {
-                    // Extract ISO week from the date
-                    week: { $isoWeek: "$finishedDateObj" }
-                }
-            },
-            { $sort: { week: -1 } }
-        ]);
-
-        const count = findresult.length > 0 ? findresult.length : 0;
-        res.status(200).json({ count: count, documents: findresult });
-    } catch (error) {
-        console.error('Error finding emp result', error);
-        res.status(500).json({ success: false, message: "Failed to find emp", error: error.message });
-    }
-});
 
 app.delete('/removeemp', async (req, res) => {
     const data = req.query.data;
@@ -837,7 +821,77 @@ console.log('id', couponid, 'data', coupondata);
         res.status(500).send('Internal server error');
     }
 });
+app.get('/findpwd', async (req, res) => {
+    const phno = req.query.data;
+    console.log(phno);
+    const findresult = await signupModel.findOne({phno:phno});
+    res.status(200).json({findresult:findresult._id});
+    
+    
 
+    });
+    app.post('/update-password', (req, res) => {
+        const userId = req.body.userId; // Get the user ID
+        const newPassword = req.body.newPassword; // Get the new password
+    
+        // Hash the new password
+        bcrypt.hash(newPassword, 10).then(hash => {
+            // Update the hashed password in the database
+            signupModel.findOneAndUpdate(
+                { _id: userId }, // Find the user by ID
+                { $set: { password: hash } }, // Update the password field
+                { new: true } // Return the updated user object
+            ).then(updatedUser => {
+                res.status(200).json({
+                    message: 'Password updated successfully',
+                    status: true,
+                    user: updatedUser
+                });
+            }).catch(err => {
+                res.status(500).json({
+                    message: 'Error updating password',
+                    status: false,
+                    error: err
+                });
+            });
+        });
+    });
+    app.get('/findemppwd', async (req, res) => {
+        const name = req.query.data;
+        console.log(name);
+        const findresult = await signupempModel.findOne({name:name});
+        res.status(200).json({findresult:findresult._id});
+        
+        
+    
+        });
+        app.post('/update-emppassword', (req, res) => {
+            const userId = req.body.userId; // Get the user ID
+            const newPassword = req.body.newPassword; // Get the new password
+        
+            // Hash the new password
+            bcrypt.hash(newPassword, 10).then(hash => {
+                // Update the hashed password in the database
+                signupempModel.findOneAndUpdate(
+                    { _id: userId }, // Find the user by ID
+                    { $set: { password: hash } }, // Update the password field
+                    { new: true } // Return the updated user object
+                ).then(updatedUser => {
+                    res.status(200).json({
+                        message: 'Password updated successfully',
+                        status: true,
+                        user: updatedUser
+                    });
+                }).catch(err => {
+                    res.status(500).json({
+                        message: 'Error updating password',
+                        status: false,
+                        error: err
+                    });
+                });
+            });
+        });
+    
 
 
 

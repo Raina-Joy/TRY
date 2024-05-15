@@ -96,7 +96,10 @@ export class AuthService
     {
         if (errorMessage === 'User not found') {
             // Alert for incorrect password or user not found
+            // let errmsg = 'User not found'
+            // return errmsg;
             return alert('User not found');
+
           } 
           else if(errorMessage === 'Password is incorrect')
           {
@@ -232,7 +235,31 @@ signupEmp(name:string, address:string, pincode:number, phno:number, email:string
                     const expiresDate = new Date(now.getTime()+(res.expiresIn*1000));
                     this.storeEmpLoginDetails(this.token, expiresDate, this.curuser, this.curuser_id);
                 }
-            })
+            }, (error) => {
+                console.error('Login failed:', error.error.message);
+                this.handleLoginempError(error.error.message);
+              }
+            );
+            
+    }
+    handleLoginempError(errorMessage: string)
+    {
+        if (errorMessage === 'User not found') {
+            // Alert for incorrect password or user not found
+            // let errmsg = 'User not found'
+            // return errmsg;
+            return alert('User not found');
+
+          } 
+          else if(errorMessage === 'Password is incorrect')
+          {
+            return alert('Incorrect Password');
+
+          }
+          else {
+            // Handle other types of errors if needed
+            return alert('An error occurred. Please try again later.');
+          }
     }
     
     logoutEmp()

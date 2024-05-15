@@ -32,16 +32,5 @@ export class EmpviewComponent implements OnInit, OnDestroy {
 
 
 
-  isNavbarOpaque = false;
-
-  @HostListener('window:scroll', [])
-  onWindowScroll() {
-    const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-
-    // You can adjust the scroll threshold based on your needs
-    const scrollThreshold = 5;
-
-    this.isNavbarOpaque = scrollPosition > scrollThreshold;
-  }
 
 }

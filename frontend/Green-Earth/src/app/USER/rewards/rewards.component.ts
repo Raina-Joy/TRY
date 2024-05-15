@@ -27,6 +27,13 @@ export class RewardsComponent implements OnInit {
     this.current_userId = this.authservice.getCustomuserid();
     //this.showRewards(); // Load rewards when component initializes
     //this.showRewards(); // Load rewards when component initializes
+    this.fetchuserCoupon();
+    this.loadSelectedCoupons(); // Load selected coupons when component initializes
+    //this.clearSelectedCoupons();
+    
+  }
+  fetchuserCoupon()
+  {
     this.dataservice.fetchUserCoupon(this.current_userId).subscribe((data:any)=>{
       this.couponState=data.state;
         console.log(data.state);
@@ -39,21 +46,23 @@ export class RewardsComponent implements OnInit {
             this.showReward = false;
           }
     })
-    this.loadSelectedCoupons(); // Load selected coupons when component initializes
-    //this.clearSelectedCoupons();
-    
+
   }
   
 
   showRewards() {
     
-    this.showReward = false;
+    
       this.dataservice.fetchUserCoupon(this.current_userId).subscribe((data: any) => {
         //console.log(data);
         // this.couponState=data.state;
         // console.log(data.state);
             this.userCouponData = data.receivedCoupon;
             this.couponVisibility = new Array(this.userCouponData.length).fill(true);
+          this.showCode = true;
+          this.showReward = false;
+
+
         
           
         

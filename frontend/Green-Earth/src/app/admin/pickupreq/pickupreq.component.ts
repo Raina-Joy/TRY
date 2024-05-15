@@ -1,15 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DataService } from 'src/app/shared/data-service';
 import { AuthService } from 'src/app/shared/auth-service';
+import { NgZone } from '@angular/core';
+
 @Component({
   selector: 'app-pickupreq',
   templateUrl: './pickupreq.component.html',
   styleUrls: ['./pickupreq.component.css']
 })
-export class PickupreqComponent implements OnInit {
+export class PickupreqComponent implements OnInit, OnDestroy {
   responseData: any[];
   selectedRow: any;
+  intervalId: any;
   empName: string;
   empId: string;
   public status: string;
@@ -23,7 +26,7 @@ export class PickupreqComponent implements OnInit {
 
   orderid: string;
 
-  constructor(private http: HttpClient, private dataservice: DataService, private authservice: AuthService) { }
+  constructor(private http: HttpClient, private dataservice: DataService, private authservice: AuthService, private zone: NgZone) { }
   ngOnInit(): void {
     this.current_user = this.authservice.getUser();
 
@@ -51,10 +54,15 @@ export class PickupreqComponent implements OnInit {
 
 
 
-
-
-
-    this.findAllpickup();
+    
+    this.intervalId = setInterval(() => {
+      this.zone.run(() => {
+        this.findAllpickup();
+      });
+    }, 100); 
+  }
+  ngOnDestroy(): void {
+    clearInterval(this.intervalId);
   }
   findAllpickup() {
     this.dataservice.findAllpickupreq().subscribe(data => {

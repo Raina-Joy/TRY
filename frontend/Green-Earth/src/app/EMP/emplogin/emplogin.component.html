@@ -1,9 +1,9 @@
 
 
-<div class="container">
-    <div class="row mt-5 mx-auto" style="width: 50%; height: 100vh;">
-        <div class="col-lg-12 ms-3">
-            <h3 class="mx-auto ">Login</h3>
+<div class="container m-4">
+    <div class="row m-5 align-content-center">
+        <div class="col-lg-6 mx-auto mt-4 p-lg-4 bg-success-subtle rounded-4 shadow-lg border border-2 border-dark-subtle ">
+            <h3 class="text-center">Login</h3>
             <form (ngSubmit)="onSubmit()" [formGroup]="loginEmpForm">
                 <div class="form-group">
                 <div class="mb-3">
@@ -16,6 +16,11 @@
                 </div>
                 <div class="d-flex justify-content-center">
                     <button type="submit" class="btn-success rounded" style="width: 40%;">Login</button>
+                </div>
+                <div class="d-flex m-4 justify-content-between">
+                    <a [routerLink]="['/empsignup']" class="text-decoration-none text-success">Create Account</a>
+                    <a [routerLink]="['/empfpwd']" class="text-decoration-none text-success">Forgot password</a>
+                    
                 </div>
             </div>
    

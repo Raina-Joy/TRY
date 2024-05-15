@@ -14,20 +14,47 @@
             From: <input type="date" class="form-control" formControlName="from">
             To: <input type="date" class="form-control" formControlName="to">
             <label for="">Select employee</label>
-            <select name="" id="" class="form-select" formControlName="selectedemp">
+            <select name="" id="" class="form-select" formControlName="selectedemp" (change)="onEmployeeSelected($event)">
               <option *ngFor="let employee of resdata" [value]="employee._id">{{ employee.name }}</option>
             </select>
             <label for="">Enter the amount / collection</label>
             <input type="number" class="form-control" formControlName="amt">
+            <label for="">Enter the basic pay</label>
+            <input type="number" class="form-control" formControlName="bpay">
             <div class="d-flex justify-content-center mt-3">
-              <button class="btn btn-info" (click)="generateSal()">Generate</button>
+              <button class="btn btn-info mb-5 " (click)="generateSal()">Generate</button>
             </div>
           </form>
           
-        <div class="col-10 p-3">
-            <p>Total Count: {{ count }}</p>
-            
+          
+          <div class="container">
+          
+            <table class="table table-bordered" *ngIf="show">
+              <thead>
+                <tr>
+                  <th>Salary details:</th>   
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    Name: {{selectedEmployeeName}}<br>
+                    Dated: From {{this.salForm.value.from}} - To {{this.salForm.value.to}} <br>
+                    Total collection: {{this.salForm.value.amt * this.resdata1.count}}<br>
+                    Basic pay: {{this.salForm.value.bpay}} <br>
+                    <div id="card-element" >
+                      Net Salary: {{count}}
+                    </div>
+                  </td>
+                </tr>
+                
+              </tbody>
+            </table>
+            <div class="d-flex justify-content-center mt-3" *ngIf="show">
+              <button class="btn btn-info mb-5 " (click)="Pay()">Pay {{count | currency:'INR' }} </button>
+            </div>
           </div>
+
           
 
     </div>

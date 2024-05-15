@@ -32,6 +32,8 @@ import { PickupreqComponent } from './admin/pickupreq/pickupreq.component';
 import { PunotificationComponent } from './EMP/punotification/punotification.component';
 import { EmppickuphistoryComponent } from './EMP/emppickuphistory/emppickuphistory.component';
 import { EarningsComponent } from './EMP/earnings/earnings.component';
+import { ForgotpwdComponent } from './USER/forgotpwd/forgotpwd.component';
+import { EmpfgtpwdComponent } from './EMP/empfgtpwd/empfgtpwd.component';
 
 @NgModule({
   declarations: [
@@ -60,6 +62,8 @@ import { EarningsComponent } from './EMP/earnings/earnings.component';
     PunotificationComponent,
     EmppickuphistoryComponent,
     EarningsComponent,
+    ForgotpwdComponent,
+    EmpfgtpwdComponent,
    
     
   ],

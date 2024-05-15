@@ -23,12 +23,16 @@ import { PickupreqComponent } from './admin/pickupreq/pickupreq.component';
 import { PunotificationComponent } from './EMP/punotification/punotification.component';
 import { EmppickuphistoryComponent } from './EMP/emppickuphistory/emppickuphistory.component';
 import { EarningsComponent } from './EMP/earnings/earnings.component';
+import { ForgotpwdComponent } from './USER/forgotpwd/forgotpwd.component';
+import { EmpfgtpwdComponent } from './EMP/empfgtpwd/empfgtpwd.component';
 const routes: Routes = [
   {path:'', redirectTo:'home',pathMatch:'full'},
 
   {path:'home', component:HomeComponent},
   {path:'signup', component:SignupComponent},
   {path:'login', component:LoginComponent},
+  {path:'fpwd', component:ForgotpwdComponent},
+
   {path:'user', component:UserviewComponent,
   
   children:
@@ -51,6 +55,8 @@ const routes: Routes = [
       
   ]},
   {path:'empsignup',component:EmpsignupComponent},
+  {path:'empfpwd',component:EmpfgtpwdComponent},
+
   {path:'emplogin',component:EmploginComponent},
   {path:'adminlogin',component:LoginadminComponent},
   {

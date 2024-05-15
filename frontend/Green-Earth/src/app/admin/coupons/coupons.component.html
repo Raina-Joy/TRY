@@ -58,7 +58,7 @@
     </div>
   </div>
 </div>
-<div class="col-lg-12 p-lg-2 ">
+<div class="col-lg-12 ms-1 ">
   <table class="table" *ngIf="show">
     <thead class="thead-dark">
       <tr>
@@ -84,7 +84,7 @@
         <td>{{ row.code }}</td>
         <td>{{ row.doc | date }}</td>
         <td>{{ row.doe | date }}</td>
-        <td><button class="btn btn-danger me-2" (click)="onRowClick(row);removeCoupon();">Delete</button><button
+        <td><button class="btn btn-danger me-1" (click)="onRowClick(row);removeCoupon();">Delete</button><button
             class="btn btn-danger mt-1" data-bs-toggle="modal" data-bs-target="#editModal" data-bs-whatever="@mdo"
             (click)="onRowClick(row);">Edit</button></td>
       </tr>

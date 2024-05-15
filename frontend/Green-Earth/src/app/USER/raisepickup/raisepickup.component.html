@@ -1,5 +1,5 @@
 <div class="container">
-    <div class="row">
+    <div class="row mb-lg-5 ">
         <div class="col-lg-6 mt-5 mb-lg-5 p-4 shadow mx-auto align-content-center bg-dark-subtle gradient-custom-5 " >
             <form (ngSubmit)="pickUpSubmit()" [formGroup]="pickupform">
                 <div class="mb-2 d-flex justify-content-center">
@@ -13,31 +13,55 @@
                 <div class="mb-2">
                     <label for="name" class="form-label">Pickup Address</label>
                     <textarea name="" formControlName="address" cols="65" rows="3" class="form-control"></textarea>
+                    <div *ngIf="pickupform.get('address')?.invalid && pickupform.get('address')?.touched">
+                        <div class="text-danger small " *ngIf="pickupform.get('address')?.errors?.['required']">Address is required.</div>
+                    </div>
                 </div>
+                
 
                 <div class="mb-2">
                     <label for="name" class="form-label">Pincode</label>
                     <input type="number" class="form-control" formControlName="pincode">
+                    <div *ngIf="pickupform.get('pincode')?.invalid && pickupform.get('pincode')?.touched">
+                        <div class="text-danger small " *ngIf="pickupform.get('pincode')?.errors?.['required']">Pincode is required.</div>
+                        <div class="text-danger small " *ngIf="pickupform.get('pincode')?.errors?.['pattern']">Pincode must be a 6-digit number.</div>
+                    </div>
                 </div>
+               
 
                 <div class="mb-2">
                     <label for="name" class="form-label">Mobile number</label>
                     <input type="number" class="form-control" formControlName="phno">
+                    <div *ngIf="pickupform.get('phno')?.invalid && pickupform.get('phno')?.touched">
+                        <div class="text-danger small " *ngIf="pickupform.get('phno')?.errors?.['required']">Mobile number is required.</div>
+                        <div class="text-danger small " *ngIf="pickupform.get('phno')?.errors?.['pattern']">Mobile number must be a 10-digit number.</div>
+                    </div>
                 </div>
+                
                 
                 <div class="mb-2">
                     <label for="name" class="form-label">Email Id</label>
                     <input type="email" class="form-control" formControlName="email">
+                    <div *ngIf="pickupform.get('email')?.invalid && pickupform.get('email')?.touched">
+                        <div class="text-danger small " *ngIf="pickupform.get('email')?.errors?.['required']">Email is required.</div>
+                        <div class="text-danger small " *ngIf="pickupform.get('email')?.errors?.['email']">Invalid email format.</div>
+                      </div>
                 </div>
                 <div class="mb-2">
                     <label for="name" class="form-label">Choose pickup date</label>
-                    <input type="date" class="form-control" formControlName="date">
+                    <input type="date" class="form-control" formControlName="date" [min]="pickupform.get('date')?.value">
+                    <div *ngIf="pickupform.get('date')?.invalid && pickupform.get('date')?.touched">
+                        <div class="text-danger small " *ngIf="pickupform.get('date')?.errors?.['required']">Date is required.</div>
+                    </div>
+
                 </div>
                 <div class="mb-2">
                     <label for="name" class="form-label">Choose Pickup Time range</label>
                     <select class="form-select" formControlName="time" >
                         <option value="9.30 am - 6.30 pm" selected>9.30 am - 6.30 pm</option>
                       </select>
+                      <div *ngIf="pickupform.get('time')?.invalid && pickupform.get('time')?.touched">
+                        <div class="text-danger small " *ngIf="pickupform.get('time')?.errors?.['required']">Time is required.</div>
                 </div>
                 
                 <div class="row ">
@@ -82,13 +106,17 @@
                     
                 </div>
 
-              
+                <div *ngIf="pickupform.get('category')?.invalid && pickupform.get('category')?.touched">
+                    <div class="text-danger small " *ngIf="pickupform.get('category')?.errors?.['required']">Category is required.</div>
+                    </div>
                 
            
                
                 <div class=" d-flex justify-content-center ">
                     <button type="submit" class="btn btn-light btn-outline-success">Submit</button>
 
+                </div>
+                
                 </div>
             </form>
 

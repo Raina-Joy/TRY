@@ -24,25 +24,25 @@ export class DataService
       return this.getPickupsByCuid(cuid).pipe(
         switchMap((pickups: any[]) => {
           if (pickups.length > 0) {
-            console.log("test1")
+            //console.log("test1")
             // Check if any pickup has a status other than 'Finished'
             const unfinishedPickup = pickups.find(pickup => pickup.status !== 'Finished');
             if (unfinishedPickup) {
               // User already has an unfinished pickup
-            console.log("test2")
+           // console.log("test2")
 
               return throwError('You already have an unfinished pickup.');
             } else {
               
               // Proceed with adding the new pickup
-            console.log("test3")
+            //console.log("test3")
 
               const pickupData: PickupDataModal = {cuid:cuid, name:name, address:address,pincode:pincode,phno:phno, email:email,date:date,time:time, category:category, status:status, notifdate:notifdate};
-              return this.http.post('http://localhost:3000/addpickup',pickupData)
+              return this.http.post('http://localhost:3000/addpickup',pickupData);
 
             }
           } else {
-            console.log("test4")
+           // console.log("test4")
 
             // No pickup exists for the provided cuid, add the new pickup
             const pickupData: PickupDataModal = {cuid:cuid, name:name, address:address,pincode:pincode,phno:phno, email:email,date:date,time:time, category:category, status:status, notifdate:notifdate};
@@ -79,6 +79,10 @@ export class DataService
     findAllpickupreq(): Observable<any[]> 
     {
         return this.http.get<any[]>('http://localhost:3000/allpickupreq');
+    }
+    findAllusers(): Observable<any[]> 
+    {
+        return this.http.get<any[]>('http://localhost:3000/allu');
     }
    
    
@@ -232,5 +236,45 @@ export class DataService
       const urlWithParams = `${apiUrl}?data=${empid}&from=${from}&to=${to}`;
       return this.http.get(urlWithParams);
     }
+   
+    payment(amount: number, token:string) {
+      console.log('Amount and token',amount,token);
+      return this.http.post('http://localhost:3000/charge', {amount, token}).subscribe(res=>{
+        console.log(res);
+      });
+    
+    }
+    fetchpwd(phno:number)
+    {
+      const apiUrl = 'http://localhost:3000/findpwd';
+      const urlWithParams = `${apiUrl}?data=${phno}`;
+      return this.http.get(urlWithParams);
+
+
+    }
+    updatePassword(userId: string, newPassword: string): Observable<any> {
+      // const apiUrl = 'http://localhost:3000';
+      // const url = `${apiUrl}/password-reset`; // Adjust the route as needed
+      const body = { userId, newPassword };
+  
+      return this.http.post('http://localhost:3000/update-password', body);
+    }
+    fetchemppwd(name:string)
+    {
+      const apiUrl = 'http://localhost:3000/findemppwd';
+      const urlWithParams = `${apiUrl}?data=${name}`;
+      return this.http.get(urlWithParams);
+
+
+    }
+    updateempPassword(userId: string, newPassword: string): Observable<any> {
+      // const apiUrl = 'http://localhost:3000';
+      // const url = `${apiUrl}/password-reset`; // Adjust the route as needed
+      const body = { userId, newPassword };
+  
+      return this.http.post('http://localhost:3000/update-emppassword', body);
+    }
+
+  
     
     }
