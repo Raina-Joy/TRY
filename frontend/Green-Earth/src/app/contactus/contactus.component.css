@@ -37,7 +37,7 @@ header
     border: 1px solid rgba(241, 91, 67, 0.25);
     padding: 25px 35px 28px 35px;
     list-style: none;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     position: relative;
   }
   
@@ -73,7 +73,7 @@ header
   
   @media screen and (max-width: 767px) {
     .contact-details-list {
-      margin-bottom: 40px;
+      margin-bottom: 10px;
     }
   }
   
@@ -99,10 +99,9 @@ header
   .home-contact-form {
     background-image: linear-gradient(rgba(0,0,0,.6), rgba(0,0,0,.6)),url("../../assets/green.jpeg");
     background-repeat: no-repeat;
-    padding: 60px;
+    padding: 30px;
    
     
-    margin-top: 180px;
     /* Chrome, Safari, Edge, Opera */
     /* Firefox */
     

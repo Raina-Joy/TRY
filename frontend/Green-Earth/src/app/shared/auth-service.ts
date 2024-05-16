@@ -49,14 +49,7 @@ export class AuthService
     {
         const authData: AuthModelSignup = {name:name, phno:phno, email:email,password:password};
         console.log(authData);
-        this.http.post('http://localhost:3000/sign-up',authData).subscribe((res:any)=>
-        {
-            console.log(res);
-            
-            this.router.navigate(['login']);
-            
-
-        })
+         return this.http.post('http://localhost:3000/sign-up',authData)
     }
 
     loginUser(phno: number, password: string){
@@ -187,23 +180,7 @@ signupEmp(name:string, address:string, pincode:number, phno:number, email:string
     {
         
         const authDataEmp: AuthModelEmp = {name:name, address:address,pincode:pincode,phno:phno,email:email, password:password};
-        this.http.post('http://localhost:3000/signupemp',authDataEmp).subscribe(res=>
-        {
-            
-             var obj: any ={"status": Boolean, "message":''};
-             obj = res;
-             if(obj.status === true)
-             {
-                alert("Successful registration")
-                this.router.navigate(['emplogin']);
-             }
-             else if(obj.status === false)
-             {
-                alert("Registration failed")
-             }
-            
-            
-        })
+        return this.http.post('http://localhost:3000/signupemp',authDataEmp)
      
     }
       // Employee login

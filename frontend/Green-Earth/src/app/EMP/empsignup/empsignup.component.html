@@ -7,27 +7,51 @@
                 <div class="mb-3">
                     <label for="name">Name:</label>      
                    <input type="text" class="form-control" formControlName="name" placeholder="Enter your full name" style="width: 100%;height: min-content;">
+                   <div *ngIf="signupempForm.get('name')?.invalid && signupempForm.get('name')?.touched">
+                    <div class="text-danger small " *ngIf="signupempForm.get('name')?.errors?.['required']">Name is required.</div>
+                </div>
                 </div>
                 <div class="mb-3">
                     <label for="name">Address:</label>      
                    <textarea class="form-control" formControlName="address" placeholder="Enter your address" style="width: 100%;height: min-content;"></textarea>
+                   <div *ngIf="signupempForm.get('address')?.invalid && signupempForm.get('address')?.touched">
+                    <div class="text-danger small" *ngIf="signupempForm.get('address')?.errors?.['required']">Address is required</div>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label for="name">Pincode:</label>      
-                    <input type="number" class="form-control" formControlName="pincode" placeholder="Enter your full phone number" style="width: 100%;height: min-content;">
+                    <input type="number" class="form-control" formControlName="pincode" placeholder="Enter your pincode" style="width: 100%;height: min-content;">
+                    <div *ngIf="signupempForm.get('pincode')?.invalid && signupempForm.get('phno')?.touched">
+                        <div class="text-danger small " *ngIf="signupempForm.get('pincode')?.errors?.['required']">Pincode is required.</div>
+                        <div class="text-danger small " *ngIf="signupempForm.get('pincode')?.errors?.['pattern']">Pincode must be a 6-digit number.</div>
+                    </div>
                    
                 </div>
                 <div class="mb-3">
                     <label for="name">Phone Number:</label>      
                    <input type="number" class="form-control" formControlName="phno" placeholder="Enter your full phone number" style="width: 100%;height: min-content;">
+                   <div *ngIf="signupempForm.get('phno')?.invalid && signupempForm.get('phno')?.touched">
+                    <div class="text-danger small " *ngIf="signupempForm.get('phno')?.errors?.['required']">Mobile number is required.</div>
+                    <div class="text-danger small " *ngIf="signupempForm.get('phno')?.errors?.['pattern']">Mobile number must be a 10-digit number.</div>
+                </div>
                 </div>
                 <div class="mb-3">
                     <label for="name">Email Id:</label>      
                    <input type="email" class="form-control" formControlName="email" placeholder="Enter your email id" style="width: 100%;height: min-content;">
+                   <div *ngIf="signupempForm.get('email')?.invalid && signupempForm.get('email')?.touched">
+                    <div class="text-danger small " *ngIf="signupempForm.get('email')?.errors?.['required']">Email is required.</div>
+                    <div class="text-danger small " *ngIf="signupempForm.get('email')?.errors?.['email']">Invalid email format.</div>
+                  </div>
                 </div>
                 <div class="mb-3">
                    <label for="password">Password:</label>
                    <input type="password"class="form-control" formControlName="password"  style="width: 100%;" class="mb-3">
+                   <div *ngIf="signupempForm.get('password')?.invalid && signupempForm.get('password')?.touched">
+                    <div class="text-danger small " *ngIf="signupempForm.get('password')?.errors?.['required']">Password is required.</div>
+                   <div *ngIf="signupempForm.controls['password'].errors?.['passwordStrength']" class="text-danger small">
+                    Password must contain at least one digit, one lowercase and one uppercase letter, and at least 8 characters.
+                  </div>
+                  </div>
                 </div>
                 <div class="d-flex justify-content-center">
                     <button [disabled]="!signupempForm.valid" type="submit" class="btn-success rounded" style="width: 40%;">Submit</button>
