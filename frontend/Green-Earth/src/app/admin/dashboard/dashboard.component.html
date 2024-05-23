@@ -52,10 +52,20 @@
             </table>
             <div class="d-flex justify-content-center mt-3" *ngIf="show">
               <button class="btn btn-info mb-5 " (click)="Pay()">Pay {{count | currency:'INR' }} </button>
+              <!-- <google-pay-button
+    environment= "TEST"
+    buttonColor = "black" 
+    buttonType = "pay"
+    [paymentRequest]="paymentRequest" [style.width.px]="buttonWidth"
+    (loadPaymentdata)="onLoadPaymentData($event)">
+  </google-pay-button> -->
             </div>
           </div>
 
           
 
     </div>
+</div>
+<div>
+  
 </div>

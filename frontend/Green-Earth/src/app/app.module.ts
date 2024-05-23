@@ -34,6 +34,7 @@ import { EmppickuphistoryComponent } from './EMP/emppickuphistory/emppickuphisto
 import { EarningsComponent } from './EMP/earnings/earnings.component';
 import { ForgotpwdComponent } from './USER/forgotpwd/forgotpwd.component';
 import { EmpfgtpwdComponent } from './EMP/empfgtpwd/empfgtpwd.component';
+import { GooglePayButtonModule } from '@google-pay/button-angular';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import { EmpfgtpwdComponent } from './EMP/empfgtpwd/empfgtpwd.component';
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    GooglePayButtonModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}

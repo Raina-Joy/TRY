@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { DataService } from 'src/app/shared/data-service';
+import { GooglePayButtonModule } from '@google-pay/button-angular';
 
 
 
@@ -11,19 +12,58 @@ import { DataService } from 'src/app/shared/data-service';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
+  
 
-constructor(private http:HttpClient, private dataservice:DataService){}
+constructor(private http:HttpClient, private dataservice:DataService){
+  this.paymentRequest =  {
+    apiVersion: 2,
+    apiVersionMinor: 0,
+    allowedPaymentMethods: [
+      {
+        type: 'CARD',
+        parameters: {
+          allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
+          allowedCardNetworks: ['AMEX', 'VISA', 'MASTERCARD']
+        },
+        tokenizationSpecification: {
+          type: 'PAYMENT_GATEWAY',
+          parameters: {
+            gateway: 'example',
+            gatewayMerchantId: 'exampleGatewayMerchantId'
+          }
+        }
+      }
+    ],
+    merchantInfo: {
+      merchantId: 'BCR2DN4T66F4LVBM',
+      merchantName: 'GREEN EARTH'
+    },
+    transactionInfo: {
+      totalPriceStatus: 'FINAL',
+      totalPriceLabel: 'Salary',
+      totalPrice: this.netmoney,
+      currencyCode: 'INR',
+      countryCode: 'IN'
+    }
+
+  }
+}
 
   public count:number;
   public resdata:any=[];
   public resdata1:any=[];
   show: boolean=false;
+  netmoney:string = '0';
   selectedEmployeeName: string | null = null;
 
   salForm:FormGroup
   paymentHandler: any = null;
+  buttonWidth = 240;
+  paymentRequest: google.payments.api.PaymentDataRequest;
+  
 
-  ngOnInit(): void {
+  
+   ngOnInit(): void {
     this.salForm = new FormGroup({
       from:new FormControl(''), 
       to: new FormControl(''),
@@ -34,8 +74,14 @@ constructor(private http:HttpClient, private dataservice:DataService){}
   
     });
   this.findAllEmp();
+  
   this.invokeStripe();
   }
+  onLoadPaymentData(event: any)
+  {
+    console.log(event,">>Data");
+  }
+
   invokeStripe() {
     if (!window.document.getElementById('stripe-script')) {
       const script = window.document.createElement('script');
@@ -77,12 +123,17 @@ constructor(private http:HttpClient, private dataservice:DataService){}
       console.log(res);
       this.resdata1 = res;
       this.count = (this.resdata1.count * this.salForm.value.amt)+ this.salForm.value.bpay;
+      console.log(this.formatAmount(this.count));
+      this.netmoney = this.count.toString();
+      this.paymentRequest.transactionInfo.totalPrice = this.netmoney; 
       this.show=true;
 
     })
+    
 
     
   }
+
   Pay()
   {
     const paymentHandler = (<any>window).StripeCheckout.configure({
@@ -98,10 +149,20 @@ constructor(private http:HttpClient, private dataservice:DataService){}
     paymentHandler.open({
       name: 'Green Earth',
       description: 'Salary',
-      amount: this.count,
+      amount: this.count * 100,
       currency: 'INR'
     });
 
   }
+  formatAmount(amount: number | bigint) {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(amount);
+  }
+
+  
 
 }
