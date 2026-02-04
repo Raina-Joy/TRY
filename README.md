@@ -1,20 +1,35 @@
-# GREEN EARTH
- GREEN EARTH is a plastic waste management system which aims to clear plastic waste from industrial
-& domestic areas. Already there is a system under the government to collect domestic plastic waste by
-paying money to them. But some people are not willing to accept the system due to the loss of money,
-they are finding other ways such as burning, throwing & landfills as plastic disposal methods. So here I’m
-planning to implement a plastic collection system which helps the users to clear the plastic waste from
-their habitat with zero cost & by that they can purchase anything with offers from different business
-platforms. A user can register in the platform, then within 3 days they are provided with the carboard bin
-to store the plastic waste. If the bin is filled then the user can raise a pickup on a scheduled date. After the
-successful pickup of the bin the users will get a reward as purchase coupon based on their interest. The
-implementing system leads a better plastic waste clearance along with sales promotion in various business
-fields.
-Tools used:
-• MongoDB Compass
-• Postman API
-• Express 4.17.17
-• Mongoose 8.1.1
-• Angular CLI 16.2.4
-• Node 18.18.0
-• Bootstrap 5
+# GREEN EARTH 🌍
+
+**GREEN EARTH** is a plastic waste management system that helps users collect and manage plastic waste from homes and industries — at **zero cost** — and rewards them with purchase offers from partner businesses. 
+
+
+## 📌 Project Overview
+
+Many people avoid conventional plastic waste collection systems because of associated costs, leading to practices like burning or dumping waste in landfills. **GREEN EARTH** aims to change that by:
+
+- Allowing users to register for free plastic waste collection
+- Providing a bin to store plastic waste within 3 days of registration
+- Offering pickup scheduling for full bins
+- Rewarding users with coupons or purchase offers after successful pickup
+
+This system promotes cleaner environments while supporting local businesses through incentive rewards. 
+
+
+## 🛠 Tools & Technologies
+
+This project uses the following technologies:
+
+- **Backend:** Node.js, Express.js, MongoDB, Mongoose 
+- **Frontend:** Angular (Green-Earth), Bootstrap 5 
+- **API Testing:** Postman 
+
+## 🚀 Features
+
+✔ User registration  
+✔ Bin allocation for plastic storage  
+✔ Pickup request scheduling  
+✔ Reward distribution (purchase coupons)  
+
+
+
+
